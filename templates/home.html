@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+        <div id='question_frame'>
+          <div class="card">
+                          {% csrf_token %}
+                 
+              </div>
+          </div>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a class="btn btn-dark" href="#" tabindex="-1" id='previous_question'>Previous</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="btn btn-primary" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item ">
+      <a class="btn btn-info " href="#" id='next_question'>Next</a>
+    </li>
+  </ul>
+</nav>
+
+
+
+
+<script type="text/javascript" src="{% static 'js/question_change.js' %}"></script>
+
+ {% endblock content %}
