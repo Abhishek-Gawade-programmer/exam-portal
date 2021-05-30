@@ -41,18 +41,24 @@ def navigation_question(request):
     question=Question.objects.all()[page_number]
 
 
-
-    return JsonResponse({
+    data_for_new_question={
         'success':'true',
         'question_title':question.question_title,
         'id':question.id,
-        'option_1':question.option_1,
-        'option_2':question.option_2,
-        'option_3':question.option_3,
-        'option_4':question.option_4,
+        'option_1':{'text':question.option_1,'student_option':''},
+        'option_2':{'text':question.option_2,'student_option':''},
+        'option_3':{'text':question.option_3,'student_option':''},
+        'option_4':{'text':question.option_4,'student_option':''},
         'csrf_token':get_token(request),
 
-        },safe=False)
+        }
+
+    if StudentAnswer.objects.filter(question=question,test=question.test).exists():
+        student_option= StudentAnswer.objects.get(question=question,test=question.test).correct_option
+        data_for_new_question[f'option_{student_option}']['student_option']='checked'
+        print(data_for_new_question)
+
+    return JsonResponse(data_for_new_question,safe=False)
 
 
 

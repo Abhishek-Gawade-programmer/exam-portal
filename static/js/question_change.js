@@ -44,11 +44,10 @@ window.question_number =1;
 
                         if (window.question_number===1) {
                             $j(previous_question).addClass('disabled')
-                            console.log('diapsehhjsbhj')
                             }
                         else{
                             $j(previous_question).removeClass('disabled')
-                            
+
                         }
 
 
@@ -71,14 +70,14 @@ window.question_number =1;
 
                                             <div class="card-body">
                                                   <ul class="list-group" style="display: inline;">
-                                                        <input type="radio" id="${response.id}1" name="${response.id}" >
-                                                        <label for="${response.id}1"><li  class="list-group-item bg-gradient-primary">${response.option_1}</li></label><br>
-                                                        <input type="radio" id="${response.id}2" name="${response.id}" >
-                                                        <label for="${response.id}2"><li  class="list-group-item bg-warning">${response.option_2}</li></label><br>
-                                                        <input type="radio" id="${response.id}3" name="${response.id}" >
-                                                        <label for="${response.id}3"><li  class="list-group-item bg-info">${response.option_3}</li></label><br>
-                                                        <input type="radio" id="${response.id}4" name="${response.id}" >
-                                                        <label for="${response.id}4"><li  class="list-group-item bg-light">${response.option_4}</li></label><br>
+                                                        <input type="radio" id="${response.id}1" name="${response.id}" ${response.option_1.student_option}>
+                                                        <label for="${response.id}1"><li  class="list-group-item bg-gradient-primary">${response.option_1.text}</li></label><br>
+                                                        <input type="radio" id="${response.id}2" name="${response.id}" ${response.option_2.student_option}>
+                                                        <label for="${response.id}2"><li  class="list-group-item bg-warning">${response.option_2.text}</li></label><br>
+                                                        <input type="radio" id="${response.id}3" name="${response.id}" ${response.option_3.student_option}>
+                                                        <label for="${response.id}3"><li  class="list-group-item bg-info">${response.option_3.text}</li></label><br>
+                                                        <input type="radio" id="${response.id}4" name="${response.id}" ${response.option_4.student_option}>
+                                                        <label for="${response.id}4"><li  class="list-group-item bg-light">${response.option_4.text}</li></label><br>
                                                   </ul>
                                             </div>
                                       </div>
