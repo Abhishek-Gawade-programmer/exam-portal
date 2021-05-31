@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import *
 
+admin.site.register(ReportQuestion)
+admin.site.register(UserQuestionList)
 
 admin.site.register(Subject)
 admin.site.register(Test)
