@@ -6,7 +6,7 @@
   </a>
 
     <span id="time" class="float-right"></span>
-    <button class="btn btn-lg btn-primary float-right"  data-toggle="modal" data-target="#exampleModalLong">
+    <button class="btn btn-lg btn-primary float-right"  data-toggle="modal" data-target="#exampleModalLong" id='show_all_question'>
       Show all Questions
       
     </button>
@@ -25,6 +25,11 @@
         </button>
       </div>
       <div class="modal-body">
+               <div class="row " id='all_question_frame'>
+
+
+               </div>
+                       
         
       </div>
       <div class="modal-footer">
@@ -36,19 +41,69 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </nav>
+<script type="text/javascript">
+      var all_question=document.getElementById('show_all_question');
+      var all_question_frame=document.getElementById('all_question_frame');
+      
+        all_question.addEventListener('click',
+              (event)=>{
+
+                  all_question_deatils();
+             
+
+
+            function all_question_deatils() {
+
+
+                      $j.ajax(
+
+                      {
+
+                          type:'GET',
+
+                          url:'/get-all-question-details/',
+
+
+                              
+                        success :function(response){
+
+                            all_question=response.all_question_json
+                            let all_question_text_button=''
+                            for (i in all_question) {
+
+                              
+                                    if (all_question[i].student_option){
+                                       if (all_question[i].bookmark){
+                                        all_question_text_button=all_question_text_button+`<div class="col mt-3"><a class="btn  btn-primary btn-block"  tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1)+'<span style="color:red">('+all_question[i].student_option+')</span>' +` </b></a></div>` ;                                    
+
+                                       }else {
+                                         
+                                      all_question_text_button=all_question_text_button+`<div class="col mt-3"><a class="btn  btn-warning btn-block"  tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1)+'<span style="color:red">('+all_question[i].student_option+')</span>' +` </b></a></div>` ;                                    
+                                       }
+                                      
+                                    }
+                                    else {
+
+                                      if (all_question[i].bookmark){
+                                        all_question_text_button=all_question_text_button+`<div class="col mt-3"><a class="btn  btn-primary btn-block"  tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1) +` </b></a></div>` ;                                      
+
+                                       }else {
+                                         
+                                      all_question_text_button=all_question_text_button+`<div class="col mt-3"><a class="btn  btn-danger btn-block"  tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1) +` </b></a></div>` ;                                      
+                                       }
+
+                                    
+                                    }
+
+
+                                 }
+                           all_question_frame.innerHTML=all_question_text_button
+                           }
+                      })
+                   
+                }
+
+                }
+              );
+</script>

@@ -5,7 +5,6 @@ from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 
 from .models import *
-from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
@@ -13,8 +12,15 @@ import json
 def initial_setup(request):    
     all_user_question=Question.objects.order_by('?')
     all_user_question_ids=[]
-    for _ in all_user_question:
-        all_user_question_ids.append(str(_.id))
+    for each_question in all_user_question:
+        if not StudentAnswer.objects.filter(question=each_question,test=each_question.test,student=request.user).exists():
+
+            intial_student_answer=StudentAnswer.objects.create(question=each_question,test=each_question.test,student=request.user)
+            intial_student_answer.save()
+
+        if str(each_question.id) not in all_user_question_ids:
+            all_user_question_ids.append(str(each_question.id))
+
     if not UserQuestionList.objects.filter(test=all_user_question[0].test,student=request.user).exists():
 
         student_test_data=UserQuestionList.objects.create(test=all_user_question[0].test,
@@ -27,11 +33,33 @@ def initial_setup(request):
 def save_question(request):
     if request.method=='POST' :
         question=get_object_or_404(Question,id=request.POST.get('pk'))
-        student_answer=StudentAnswer.objects.get_or_create(question=question,test=question.test,student=request.user)
-        student_answer[0].student_option=request.POST.get('option')
-        student_answer[0].save()
+        student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
+        print(student_answer)
+        student_answer.student_option=request.POST.get('option')
+        student_answer.save()
         return JsonResponse({'success':'true'},safe=False)
     return JsonResponse({'success':'false'})
+
+
+
+
+
+
+
+def get_all_question_details(request):
+
+    if request.method=='GET' :
+        all_question_student=json.loads(UserQuestionList.objects.get(
+                        student=request.user).test_question)
+
+        all_question_json={}
+        for i in range(len(all_question_student)):
+            x=StudentAnswer.objects.get(student=request.user,question=all_question_student[i])
+            all_question_json[i]={'seen':x.question_seen,'bookmark':x.bookmark,'student_option':x.student_option}
+
+
+        return JsonResponse({'success':'true','all_question_json':all_question_json},safe=False)
+    return JsonResponse({'success':'true','yes':'usidhb'},safe=False)
 
 
 
@@ -50,9 +78,10 @@ def navigation_question(request):
     question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
     question=get_object_or_404(Question,id=question_id)
 
-    student_answer=StudentAnswer.objects.get_or_create(question=question,test=question.test,student=request.user)
-    student_answer[0].question_seen=True
-    student_answer[0].save()
+    student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
+    print(student_answer)
+    student_answer.question_seen=True
+    student_answer.save()
 
 
     data_for_new_question={

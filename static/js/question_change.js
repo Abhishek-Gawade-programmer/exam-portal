@@ -1,4 +1,6 @@
+
 $j(window).on('load', function(){ 
+    var all_question=document.getElementById('show_all_question');
 
 
 
@@ -11,6 +13,10 @@ $j(window).on('load', function(){
 
     var next_question=document.getElementById('next_question');
     var previous_question=document.getElementById('previous_question');
+
+  
+
+
 
 window.question_number =1;
 
@@ -36,7 +42,6 @@ window.question_number =1;
 
                         if (response.next==='false') {
                             $j(next_question).addClass('disabled')
-                            console.log('diapsehhjsbhj')
                             }
 
 
@@ -44,6 +49,7 @@ window.question_number =1;
 
                         if (window.question_number===1) {
                             $j(previous_question).addClass('disabled')
+                            console.log('diapsehhjsbhj')
                             }
                         else{
                             $j(previous_question).removeClass('disabled')
@@ -98,6 +104,7 @@ window.question_number =1;
                                         var option_4 =document.getElementById(current_question_id+'4');
 
                                         var all_options=[option_1,option_2,option_3,option_4]
+                          
 
                                         all_options.forEach(item => item.addEventListener('change',
                                                     (event)=>{
@@ -163,27 +170,28 @@ window.question_number =1;
 
 
 
-                                    next_question.addEventListener('click',
-                                        (event)=>{
+    next_question.addEventListener('click',
+        (event)=>{
 
-                                            console.log('next');
-                                            navigation_question(window.question_number+1);
-                                        }
-
-
-                                        );
+            console.log('next');
+            navigation_question(window.question_number+1);
+        }
 
 
-
-                                   previous_question.addEventListener('click',
-                                        (event)=>{
-
-                                            console.log('previous');
-                                            navigation_question(window.question_number-1);
-                                        }
+        );
 
 
-                                        );
+
+   previous_question.addEventListener('click',
+        (event)=>{
+            console.log(previous_question)
+
+            console.log('previous');
+            navigation_question(window.question_number-1);
+        }
+
+
+        );
 
 
 
@@ -211,6 +219,19 @@ jQuery(function ($) {
     var fiveMinutes = 3600,
         display = $('#time');
     startTimer(fiveMinutes, display);
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 
