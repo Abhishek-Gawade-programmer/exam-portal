@@ -18,10 +18,19 @@
   
 
                 <div class="row ">
-                  <div class="col mt-3"><a class="btn btn-block btn-warning"  tabindex="-1" id='previous_question'><b>Previous</b></a></div>
-                  <div class="col mt-3"><a class="btn btn-block btn-primary" ><b>2</b></a></div>
-                  <div class="col mt-3"><a class="btn btn-block btn-success "  id='next_question'><b>Next</b></a></div>
-                  <div class="col mt-3"><a class="btn btn-block btn-danger " id='next_question' data-toggle="modal" data-target="#exampleModalCenter"><b>Submit Exam</b></a></div>
+                  <div class="col mt-3">
+                    
+                    <a class="btn  btn-block btn-danger"  tabindex="-1" id='' data-toggle="modal" data-target="#remportexamodel"><b>Report</b></a>
+                  </div>
+                  <div class="col mt-3">
+                             <a class="btn btn-lg btn-primary float-right"  data-toggle="modal" data-target="#exampleModalLong" id='show_all_question'>
+                    Show all Questions</a>
+                  </div>
+                  <div class="col mt-3"><a class="btn  btn-block btn-info"  tabindex="-1" id='bookmark_question'><b>Bookmark</b></a></div>
+                  <div class="col mt-3"><a class="btn  btn-block btn-warning"  tabindex="-1" id='previous_question'><b>Previous</b></a></div>
+                  <div class="col mt-3"><a class="btn  btn-block btn-primary" ><b>2</b></a></div>
+                  <div class="col mt-3"><a class="btn  btn-block btn-success "  id='next_question'><b>Next</b></a></div>
+                  <div class="col mt-3"><a class="btn  btn-block btn-danger" style="color: white;" id='next_question' data-toggle="modal" data-target="#exampleModalCenter"><b>Submit Exam</b></a></div>
                </div>
                                 
             </nav>
@@ -31,7 +40,7 @@
 
 
 
-<!-- Modal -->
+<!-- Sumbit Exam Modal -->
 <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -54,7 +63,54 @@
 </div>
 
 
+<!-- Sumbit Exam Modal -->
+<div class="modal" id="remportexamodel" tabindex="-1" role="dialog" aria-labelledby="remportexamodelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+ 
+        <h5 class="modal-title" id="exampleModalLongTitle">Report Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" role="alert">
+        Leave if you do not want to give discription your report will be send
+      </div>
+        <input class="form-control form-control" type="text" placeholder="Description for Report">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger">Report Question</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 
+<!-- Sho all questionmodel -->
+<div class="modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">All Questions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+               <div class="row " id='all_question_frame'>
+              </div>
+                       
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -64,7 +120,25 @@
 
 
 
-<noscript type="text/javascript">
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="{% static 'js/question_change.js' %}"></script>
+
+
+
+
+
+<noscript type="text/javascript" >
   
   var video = document.querySelector("#videoElement");
 
@@ -85,6 +159,6 @@ if (navigator.mediaDevices.getUserMedia) {
 
 
 
-<script type="text/javascript" src="{% static 'js/question_change.js' %}"></script>
+
 
  {% endblock content %}

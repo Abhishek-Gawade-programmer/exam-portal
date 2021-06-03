@@ -1,6 +1,5 @@
 
 $j(window).on('load', function(){ 
-    var all_question=document.getElementById('show_all_question');
 
 
 
@@ -14,8 +13,14 @@ $j(window).on('load', function(){
     var next_question=document.getElementById('next_question');
     var previous_question=document.getElementById('previous_question');
 
-  
 
+    var all_question=document.getElementById('show_all_question');
+    var all_question_frame=document.getElementById('all_question_frame');
+    var bookmark_question=document.getElementById('bookmark_question');
+    
+
+  
+window.navigation_question= navigation_question;
 
 
 window.question_number =1;
@@ -39,6 +44,7 @@ window.question_number =1;
                     },
                     
                     success :function(response){
+                         $j(get_message).hide(); 
 
                         if (response.next==='false') {
                             $j(next_question).addClass('disabled')
@@ -49,7 +55,6 @@ window.question_number =1;
 
                         if (window.question_number===1) {
                             $j(previous_question).addClass('disabled')
-                            console.log('diapsehhjsbhj')
                             }
                         else{
                             $j(previous_question).removeClass('disabled')
@@ -131,10 +136,11 @@ window.question_number =1;
                                                                                 },
                                                                                 
                                                                                 success :function(response){
-                                                                                    var question_number_element=document.getElementById('question_number');
-                                                                                    var answer_number_element=document.getElementById('answer_number');
-                                                                                    question_number_element.textContent=question_number;
-                                                                                    answer_number_element.textContent=option_number;
+                                                                                    get_message.innerHTML=`<strong>Question No :
+                                                                                                            <span id='question_number'>${question_number}</span></strong> 
+                                                                                                                Save with Option :<span id='answer_number'>${option_number}
+                                                                                                            </span>`
+                                                                                                                                               
                                                                                     $j(get_message).show();                         
                                                                                 }
                                                                         })
@@ -194,6 +200,111 @@ window.question_number =1;
         );
 
 
+bookmark_question.addEventListener('click',
+        (event)=>{
+            
+     $j.ajax(
+                 {
+                     type:'GET',
+                    url:'/toogle-bookmark/'+window.question_number+'/',
+
+                    success :function(response){
+
+                    if (response.done) {
+                            get_message.innerHTML=`<strong>Question No :
+                                <span id='question_number'>${window.question_number}</span></strong> 
+                                <span class="badge badge-danger badge-pill" style="font-size:120%">BookMarked</span>
+                                `
+                            }else{
+                                    get_message.innerHTML=`<strong>Question No :
+                                    <span id='question_number'>${window.question_number}</span></strong> 
+                                    <span class="badge badge-success badge-pill" style="font-size:120%">Removed From Bookmark</span>
+                                        `
+                        }   
+
+                     $j(get_message).show(); 
+                                
+                       
+                    }
+                 }
+
+
+        );
+
+ });
+
+
+
+
+
+
+
+
+all_question.addEventListener('click',
+      (event)=>{
+
+          all_question_deatils();
+     
+
+
+    function all_question_deatils() {
+
+
+              $j.ajax(
+
+              {
+
+                  type:'GET',
+
+                  url:'/get-all-question-details/',
+
+
+                      
+                success :function(response){
+
+                    all_question=response.all_question_json;
+                    let all_question_text_button='';
+                    for (i in all_question) {
+
+                      
+                            if (all_question[i].student_option){
+                               if (all_question[i].bookmark){
+                                all_question_text_button=all_question_text_button+`<div data-dismiss="modal" onclick="function hi(){navigation_question(${parseInt(i)+1})};hi()" class="col mt-3"> <a class="btn btn-sm btn-primary btn-block"  data="${i}" tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1)+'<span style="color:red">('+all_question[i].student_option+')</span>' +` </b></a></div>` ;                                    
+
+                               }else {
+                                 
+                              all_question_text_button=all_question_text_button+`<div data-dismiss="modal" onclick="function hi(){navigation_question(${parseInt(i)+1})};hi()" class="col mt-3" ><a class="btn btn-sm btn-warning btn-block"  data="${i}" tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1)+'<span style="color:red">('+all_question[i].student_option+')</span>' +` </b></a></div>` ;                                    
+                               }
+                              
+                            }
+                            else {
+
+                              if (all_question[i].bookmark){
+                                all_question_text_button=all_question_text_button+`<div data-dismiss="modal" onclick="function hi(){navigation_question(${parseInt(i)+1})};hi()" class="col mt-3" ><a class="btn btn-sm btn-primary btn-block"  data="${i}" tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1) +` </b></a></div>` ;                                      
+
+                               }else {
+                                 
+                              all_question_text_button=all_question_text_button+`<div data-dismiss="modal" onclick="function hi(){navigation_question(${parseInt(i)+1})};hi()" class="col mt-3" ><a class="btn btn-sm btn-danger btn-block"  data="${i}" tabindex="-1" id='previous_question'><b>Q` +(parseInt(i)+1) +` </b></a></div>` ;                                      
+                               }
+
+                            
+                            }
+
+
+                         }
+                   all_question_frame.innerHTML=all_question_text_button
+
+
+
+                   }
+              })
+           
+        }
+
+        }
+      );
+
+
 
 
 function startTimer(duration, display) {
@@ -219,16 +330,6 @@ jQuery(function ($) {
     var fiveMinutes = 3600,
         display = $('#time');
     startTimer(fiveMinutes, display);
-
-
-
-
-
-
-
-
-
-
 
 
 

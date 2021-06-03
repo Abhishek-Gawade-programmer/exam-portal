@@ -34,7 +34,6 @@ def save_question(request):
     if request.method=='POST' :
         question=get_object_or_404(Question,id=request.POST.get('pk'))
         student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
-        print(student_answer)
         student_answer.student_option=request.POST.get('option')
         student_answer.save()
         return JsonResponse({'success':'true'},safe=False)
@@ -79,7 +78,6 @@ def navigation_question(request):
     question=get_object_or_404(Question,id=question_id)
 
     student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
-    print(student_answer)
     student_answer.question_seen=True
     student_answer.save()
 
@@ -104,6 +102,33 @@ def navigation_question(request):
 
 
 
+
+
+def toogle_bookmark(request,page_number):
+    page_number=page_number-1
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
+    question=get_object_or_404(Question,id=question_id)
+
+    student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
+    student_answer.question_seen=True
+
+    if student_answer.bookmark:
+        student_answer.bookmark=False
+    else:
+        student_answer.bookmark=True
+        
+    student_answer.save()
+
+
+    toogle_bookmark={
+        'success':'true',
+        'done':student_answer.bookmark
+
+
+
+        }
+
+    return JsonResponse(toogle_bookmark,safe=False)
 
 
 
