@@ -131,4 +131,26 @@ def toogle_bookmark(request,page_number):
     return JsonResponse(toogle_bookmark,safe=False)
 
 
+def report_question(request,page_number,comment=''):
+    page_number=page_number-1
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
+    question=get_object_or_404(Question,id=question_id)
 
+    student_report_question=ReportQuestion.objects.filter(question=question,test=question.test,student=request.user)
+    if student_report_question.exists():
+        student_report_question=ReportQuestion.objects.get(question=question,test=question.test,student=request.user)
+        student_report_question.comment=comment
+    else:
+        student_report_question=ReportQuestion.objects.create(question=question,test=question.test,student=request.user,comment=comment)
+        
+    student_report_question.save()
+
+
+    toogle_bookmark={
+        'success':'true',
+
+
+
+        }
+
+    return JsonResponse(toogle_bookmark,safe=False)

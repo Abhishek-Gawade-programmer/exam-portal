@@ -20,7 +20,7 @@
                 <div class="row ">
                   <div class="col mt-3">
                     
-                    <a class="btn  btn-block btn-danger"  tabindex="-1" id='' data-toggle="modal" data-target="#remportexamodel"><b>Report</b></a>
+                    <a class="btn  btn-block btn-danger"  tabindex="-1" data-toggle="modal" data-target="#remportexamodel"><b>Report</b></a>
                   </div>
                   <div class="col mt-3">
                              <a class="btn btn-lg btn-primary float-right"  data-toggle="modal" data-target="#exampleModalLong" id='show_all_question'>
@@ -78,11 +78,11 @@
         <div class="alert alert-info" role="alert">
         Leave if you do not want to give discription your report will be send
       </div>
-        <input class="form-control form-control" type="text" placeholder="Description for Report">
+        <input class="form-control form-control" type="text" placeholder="Description for Report" id='description_box' value="">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger">Report Question</button>
+        <button type="button" class="btn btn-danger" id='report_question'>Report Question</button>
       </div>
     </div>
   </div>
