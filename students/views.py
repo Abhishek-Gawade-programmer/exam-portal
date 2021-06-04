@@ -1,34 +1,44 @@
 from django.shortcuts import render,get_object_or_404
-from django.views.generic.list import ListView
 from django.http import JsonResponse, HttpResponse
-from django.views.generic import TemplateView
-from django.core.paginator import Paginator
 
 from .models import *
 from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
 
-def initial_setup(request):    
+def initial_setup(request):
+
     all_user_question=Question.objects.order_by('?')
-    all_user_question_ids=[]
-    for each_question in all_user_question:
-        if not StudentAnswer.objects.filter(question=each_question,test=each_question.test,student=request.user).exists():
+    #get the test
+    check_test_given=UserQuestionList.objects.filter(test=all_user_question[0].test,student=request.user).exists()
 
-            intial_student_answer=StudentAnswer.objects.create(question=each_question,test=each_question.test,student=request.user)
-            intial_student_answer.save()
+    if  not check_test_given:
+        all_user_question_ids=[]    
 
-        if str(each_question.id) not in all_user_question_ids:
-            all_user_question_ids.append(str(each_question.id))
+        for each_question in all_user_question:
+            if not StudentAnswer.objects.filter(question=each_question,test=each_question.test,student=request.user).exists():
 
-    if not UserQuestionList.objects.filter(test=all_user_question[0].test,student=request.user).exists():
+                intial_student_answer=StudentAnswer.objects.create(question=each_question,test=each_question.test,student=request.user)
+                intial_student_answer.save()
 
-        student_test_data=UserQuestionList.objects.create(test=all_user_question[0].test,
-                        student=request.user,test_question=json.dumps(all_user_question_ids),
-                        start_time=timezone.now())
-        student_test_data.save()
+            if str(each_question.id) not in all_user_question_ids:
+                all_user_question_ids.append(str(each_question.id))
 
-    return render(request,'home.html')
+        if not UserQuestionList.objects.filter(test=all_user_question[0].test,student=request.user).exists():
+
+            student_test_data=UserQuestionList.objects.create(test=all_user_question[0].test,
+                            student=request.user,test_question=json.dumps(all_user_question_ids),
+                            start_time=timezone.now())
+            student_test_data.save()
+
+        return render(request,'home.html')
+    else:
+        check_test_given=UserQuestionList.objects.get(test=all_user_question[0].test,student=request.user)
+        if check_test_given.end_time:
+            return render(request,'403_not_allowed.html')
+        else:
+            return render(request,'home.html')
+
 
 def save_question(request):
     if request.method=='POST' :
@@ -36,6 +46,7 @@ def save_question(request):
         student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
         student_answer.student_option=request.POST.get('option')
         student_answer.save()
+
         return JsonResponse({'success':'true'},safe=False)
     return JsonResponse({'success':'false'})
 
@@ -146,11 +157,21 @@ def report_question(request,page_number,comment=''):
     student_report_question.save()
 
 
-    toogle_bookmark={
+    report_succes={
         'success':'true',
-
-
-
         }
 
-    return JsonResponse(toogle_bookmark,safe=False)
+    return JsonResponse(report_succes,safe=False)
+
+
+
+
+def submit_exam(request):
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[0]
+    question=get_object_or_404(Question,id=question_id)
+    x=UserQuestionList.objects.get(test=question.test,student=request.user)
+    x.end_time=timezone.now()
+    x.save()
+    tick_question=StudentAnswer.objects.filter(student=request.user,test=question.test).exclude(student_option='').count()
+
+    return render(request,'exam_submit.html',{'exam_info':x,'tick_question':tick_question})

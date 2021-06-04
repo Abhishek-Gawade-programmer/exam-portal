@@ -19,6 +19,9 @@ $j(window).on('load', function(){
     var bookmark_question=document.getElementById('bookmark_question');
 
     var report_question=document.getElementById('report_question');
+    var submit_exam=document.getElementById('submit_exam');
+
+    
 
 
   
@@ -317,10 +320,6 @@ report_question.addEventListener('click',
 
           report_question_fu();
 
-     
-
-
-
     function report_question_fu() {
             var description_box=document.getElementById('description_box');
               $j.ajax(
@@ -357,6 +356,34 @@ report_question.addEventListener('click',
 
 
 
+
+
+submit_exam.addEventListener('click',
+      (event)=>{
+        console.log('submit cl8ick')
+
+          submit_exam_fuction();
+
+    function submit_exam_fuction() {
+              $j.ajax(
+
+              {
+                  type:'GET',
+
+                  url:'/submit-exam',
+
+                success :function(response){
+                    window.location.replace("http://localhost:8000/submit-exam/");
+                    
+
+                   }
+              })
+           
+        }
+
+
+ }
+);
 
 
 

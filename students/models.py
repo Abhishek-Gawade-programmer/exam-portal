@@ -27,8 +27,9 @@ class Test(models.Model):
 
     start_time=models.DateTimeField()
 
-    end_time = models.DateTimeField()
+    end_time = models.DateTimeField(blank=True,null=True)
 
+    max_question=models.IntegerField(default=0)
     max_mark=models.IntegerField(default=0)
     passing_marks=models.IntegerField(default=0)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
@@ -54,6 +55,7 @@ class Question(models.Model):
     option_2=models.CharField(max_length=200)
     option_3=models.CharField(max_length=200)
     option_4=models.CharField(max_length=200)
+    question_marks=models.FloatField(default=1)
     test= models.ForeignKey(Test,on_delete=models.CASCADE)
     correct_option = models.CharField(choices=CORRECT_ANSWER,verbose_name='Correct Option',max_length=1,default='1')
 
@@ -72,6 +74,8 @@ class StudentAnswer(models.Model):
     def __str__(self):
         return self.question.question_title+ str(self.student_option)
 
+    
+
 class ReportQuestion(models.Model):
     student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     question= models.ForeignKey(Question,on_delete=models.SET_NULL,blank=True,null=True)
@@ -83,6 +87,7 @@ class UserQuestionList(models.Model):
     student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     start_time=models.DateTimeField()
+    end_time=models.DateTimeField(null=True)
     test_question=models.TextField(max_length=2000)
 
 
