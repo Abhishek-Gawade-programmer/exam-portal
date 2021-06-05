@@ -15,6 +15,7 @@ CORRECT_ANSWER =(
 class Subject(models.Model):
     hod=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     subject_name=models.CharField(max_length=300,unique=True,help_text = "Enter Subject Name <b>Do Not Duplicate </b>",)
+    subject_code=models.CharField(max_length=10,unique=True,help_text = "Enter Subject Code <b>Given by SPPU</b>",)
     teachers=models.ManyToManyField(User,related_name='subject_teachers',help_text = "Use <b>control + arrow</b> click to select multiple teachers",verbose_name='Select Teachers Want To Include')
     
 

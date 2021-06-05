@@ -1,13 +1,15 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse, HttpResponse
 
-from .models import *
+from students.models import *
 from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
+from django.views.generic import ListView,DetailView,View,CreateView,UpdateView
 
 from .forms import TestCreateFrom,SubjectCreateFrom
 from django.contrib import messages
+
 
 def create_new_test(request):
 	testcreatefrom = TestCreateFrom()
@@ -37,8 +39,17 @@ def create_new_subject(request):
 
 
 
+def subject_list_view(request):
+    all_subject=Subject.objects.all()
+    return render(request,'teachers/all_subject_list.html',
+    			{'all_subject':all_subject})
 
 
+def subject_detail_view(request,pk):
+    subject=Subject.objects.get(pk=pk)
+    test_in_subject=Test.objects.filter(subject=subject)
+    return render(request,'teachers/subject_detail.html',
+    			{'subject':subject,'test_in_subject':test_in_subject})
 
 
 
