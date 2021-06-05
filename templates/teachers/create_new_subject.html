@@ -1,0 +1,28 @@
+{% extends 'teachers/teachers_base.html' %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+<h2 class="h1 fw-bold text-center">Create a New Subject</h2>
+<hr>
+<div class="row">
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-row">
+
+          {% for field in subjectcreatefrom %}
+
+          <div class="form-group col-md-6 mb-0">
+            {{ field|as_crispy_field }}
+          </div>
+        {% endfor %}
+  </div>
+  <button type="submit" name="Create Test" class="btn btn-secondary btn-block btn-lg"><i class="fas fa-plus-circle"></i> Create Subject</button>
+
+<br>
+</form>
+ </div>
+
+
+
+
+ {% endblock content %}

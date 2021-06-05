@@ -14,7 +14,8 @@ CORRECT_ANSWER =(
 
 class Subject(models.Model):
     hod=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    subject_name=models.CharField(max_length=300)
+    subject_name=models.CharField(max_length=300,unique=True,help_text = "Enter Subject Name <b>Do Not Duplicate </b>",)
+    teachers=models.ManyToManyField(User,related_name='subject_teachers',help_text = "Use <b>control + arrow</b> click to select multiple teachers",verbose_name='Select Teachers Want To Include')
     
 
     def __str__(self):
@@ -23,22 +24,14 @@ class Subject(models.Model):
 
 class Test(models.Model):
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    test_title =models.CharField(max_length=300)
-
-    start_time=models.DateTimeField()
-
-    end_time = models.DateTimeField(blank=True,null=True)
-
-    max_question=models.IntegerField(default=0)
-    max_mark=models.IntegerField(default=0)
-    passing_marks=models.IntegerField(default=0)
+    test_title =models.CharField(max_length=300,unique=True,help_text = "Title For Your test <b>Not Subject Name</b>")
+    duration=models.TimeField(default='01:00:00',help_text = "Please use the following format: <em>HH-MM-SS</em>.")
+    make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")
+    total_question=models.IntegerField(default=0,help_text = "Total Questions You Created")
+    max_mark=models.IntegerField(default=0,help_text = "Max marks of this Test")
+    passing_marks=models.IntegerField(default=0,help_text = "Keep Zero for <b>No Passing Criteria </b> and Less than <b>Max</b> marks")
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
 
-
-    @property
-    def duration(self):
-        return self.end_time - self.start_time
-    
 
     def __str__(self):
         return self.test_title+ str(self.duration)
@@ -50,7 +43,7 @@ class Question(models.Model):
                     db_index=True,)
 
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    question_title =models.CharField(max_length=300)
+    question_title =models.CharField(max_length=300,unique=True,)
     option_1=models.CharField(max_length=200)
     option_2=models.CharField(max_length=200)
     option_3=models.CharField(max_length=200)
