@@ -4,13 +4,13 @@
 {% load crispy_forms_tags %} 
 {% block content %} 
 
-<h2 class="h1 fw-bold text-center">Create a New Subject</h2>
+<h2 class="h1 fw-bold text-center">Create a New Question</h2>
 <hr />
 <div class="row">
   <form method="POST" action="">
     {% csrf_token %}
     <div class="form-row">
-      {% for field in subjectcreatefrom %}
+      {% for field in questioncreatefrom %}
 
       <div class="form-group col-md-6 mb-0">{{ field|as_crispy_field }}</div>
       {% endfor %}
@@ -20,10 +20,10 @@
       name="Create Test"
       class="btn btn-secondary btn-block btn-lg"
     >
-      <i class="fas fa-plus-circle"></i> Create Subject
+      <i class="fas fa-plus-circle"></i> Create Question
     </button>
 
-    <br />
+    <br >
   </form>
 </div>
 

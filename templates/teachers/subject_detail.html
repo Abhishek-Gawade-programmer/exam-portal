@@ -1,9 +1,15 @@
 {% extends 'teachers/teachers_base.html' %}
 {% load static %}
-{% block content %}
 {% load crispy_forms_tags %}
 
-<h2 class="h3 fw-bold text-center"> Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> <button type="button" class="btn btn-secondary  btn-floating"> <i class="fas fa-pencil-alt"></i></button></h2>
+{% block content %}
+<h4 class="h3 fw-bold"> Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> <button type="button" class="btn btn-secondary  btn-floating"> <i class="fas fa-pencil-alt"></i></button>
+<span class="float-right">
+
+    <a href="{% url 'test_create' subject.id %}">
+    <button type="button" class="btn btn-dark btn-rounded">Create Test</button></a>
+</span>
+</h4>
 <hr>
 <style type="text/css">
     .list-group-item.active {
@@ -20,7 +26,7 @@
                   <li class="list-group-item active" aria-current="true">
                   {{test.test_title}}
                   
-                  <a href="">
+                  <a href="{% url 'test_detail' test.id %}">
                         <span class="float-right btn btn-secondary  btn-sm btn-rounded">
                             Get Info
                         </span>

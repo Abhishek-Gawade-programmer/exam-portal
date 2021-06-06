@@ -6,12 +6,12 @@
 <hr>
 <div class="row">
 {% for subject in all_subject %}
-     <div class="form-group col-md-6 mb-0">
+     <div class="form-group col-md-6 mb-4">
               <ul class="list-group">
                   <li class="list-group-item active" aria-current="true">
                   {{subject}}
                   
-                  <a href="">
+                  <a href="{% url 'subject_detail' subject.pk %}">
                         <span class="float-right btn btn-secondary  btn-sm btn-rounded">
                             Get Info
                         </span>

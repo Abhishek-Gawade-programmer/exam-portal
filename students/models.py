@@ -25,7 +25,7 @@ class Subject(models.Model):
 
 class Test(models.Model):
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    test_title =models.CharField(max_length=300,unique=True,help_text = "Title For Your test <b>Not Subject Name</b>")
+    test_title =models.CharField(max_length=300,help_text = "Title For Your test <b>Not Subject Name</b>")
     duration=models.TimeField(default='01:00:00',help_text = "Please use the following format: <em>HH-MM-SS</em>.")
     make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")
     total_question=models.IntegerField(default=0,help_text = "Total Questions You Created")
@@ -44,14 +44,14 @@ class Question(models.Model):
                     db_index=True,)
 
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    question_title =models.CharField(max_length=300,unique=True,)
-    option_1=models.CharField(max_length=200)
-    option_2=models.CharField(max_length=200)
-    option_3=models.CharField(max_length=200)
-    option_4=models.CharField(max_length=200)
-    question_marks=models.FloatField(default=1)
+    question_title =models.CharField(max_length=300,unique=True,help_text='make sure question should me <b>Clear and Not Duplicate</b>')
+    option_1=models.CharField(max_length=200,help_text='Option 1 should not to be repeat')
+    option_2=models.CharField(max_length=200,help_text='Option 2 should not to be repeat')
+    option_3=models.CharField(max_length=200,help_text='Option 3 should not to be repeat')
+    option_4=models.CharField(max_length=200,help_text='Option 4 should not to be repeat')
+    question_marks=models.FloatField(default=1,help_text='Marks for this question <b>Default is 1.0</b>')
     test= models.ForeignKey(Test,on_delete=models.CASCADE)
-    correct_option = models.CharField(choices=CORRECT_ANSWER,verbose_name='Correct Option',max_length=1,default='1')
+    correct_option = models.CharField(choices=CORRECT_ANSWER,verbose_name='Correct Option',max_length=1,default='')
 
     def __str__(self):
         return self.question_title
