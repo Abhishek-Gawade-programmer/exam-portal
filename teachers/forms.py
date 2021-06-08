@@ -12,12 +12,6 @@ class TestCreateFrom(forms.ModelForm):
 
         widgets = {
 
-            # 'verify_order': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox1"}),
-            # 'delivered': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox2",}),
-            # 'payment_done': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox3"}),
-
-
-
         }
 
 
@@ -29,11 +23,6 @@ class SubjectCreateFrom(forms.ModelForm):
 
         widgets = {
 
-            # 'verify_order': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox1"}),
-            # 'delivered': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox2",}),
-            # 'payment_done': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox3"}),
-
-
 
         }
 
@@ -44,11 +33,5 @@ class QuestionCreateFrom(forms.ModelForm):
         exclude=('teacher','test')
 
         widgets = {
-
-            # 'verify_order': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox1"}),
-            # 'delivered': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox2",}),
-            # 'payment_done': forms.CheckboxInput(attrs={'class':"form-check-input", 'type':"checkbox", 'id':"checkbox3"}),
-
-
 
         }

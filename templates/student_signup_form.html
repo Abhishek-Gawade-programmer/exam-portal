@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+
+<h2 class="h1 fw-bold text-center">Sign up as a {{ user_type }}</h2>
+<hr />
+<div class="row">
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-row">
+      {% for field in form %}
+
+      <div class="form-group col-md-6 mb-0">{{ field|as_crispy_field }}</div>
+      {% endfor %}
+    </div>
+    <button
+      type="submit"
+      name="Create Test"
+      class="btn btn-secondary btn-block btn-lg"
+    >
+      <i class="fas fa-plus-circle"></i> Create Account
+    </button>
+
+    <br >
+  </form>
+</div>
+
+{% endblock %}

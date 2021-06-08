@@ -3,7 +3,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h4 class="h3 fw-bold"> Questions in <span style="color:#1E90FF">"{{test.test_title}}"  Test. </span><button type="button" class="btn btn-secondary  btn-floating"> <i class="fas fa-pencil-alt"></i></button>
+<h4 class="h3 fw-bold"> Questions in 
+    <span style="color:#1E90FF">"{{test.test_title}}"  Test. </span>
+    <a href="{% url 'test_update' test.id %}">
+        <button type="button" class="btn btn-secondary  btn-floating"> 
+            <i class="fas fa-pencil-alt"></i>
+        </button>
+    </a>
+
 <span class="float-right">
 
     <a href="{% url 'question_create' test.id %}">
@@ -28,7 +35,7 @@
                   <li class="list-group-item active" aria-current="true">
                   {{que.question_title}}
                   
-                  <a href="">
+                  <a href="{% url 'question_update' que.id %}">
                         <span class="float-right btn btn-success  btn-sm btn-rounded">
                              <i class="fas fa-pencil-alt fa-lg"></i>
 

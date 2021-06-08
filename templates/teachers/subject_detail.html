@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h4 class="h3 fw-bold"> Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> <button type="button" class="btn btn-secondary  btn-floating"> <i class="fas fa-pencil-alt"></i></button>
+<h4 class="h3 fw-bold"> Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> 
+<a href="{% url 'subject_update' subject.id %}">
+    <button type="button" class="btn btn-secondary  btn-floating"> <i class="fas fa-pencil-alt"></i></button></a>
 <span class="float-right">
 
     <a href="{% url 'test_create' subject.id %}">

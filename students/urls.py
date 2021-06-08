@@ -1,10 +1,11 @@
 from django.urls import path
 from .views import (initial_setup,save_question,navigation_question,
                 get_all_question_details,toogle_bookmark,report_question,
-                submit_exam)
+                submit_exam,StudentSignUpView)
 
 
 urlpatterns = [
+        path('student-signup/',StudentSignUpView.as_view(), name='student_signup'),
         path('',initial_setup,name ='quiz-list'),
 
         path('save-question/',save_question,name ='save_question'),
