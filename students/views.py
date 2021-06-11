@@ -15,6 +15,10 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import StudentSignUpForm,TeacherSignUpForm
 
+from verify_email.email_handler import send_verification_email
+
+
+
 class StudentSignUpView(CreateView):
     model = User
     form_class = StudentSignUpForm
@@ -26,9 +30,12 @@ class StudentSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+        inactive_user = send_verification_email(self.request, user)
+        # login(self.request, user)
         # return redirect('students:quiz_list')
         return HttpResponse('nice work')
+
+    
 
         
 class TeacherSignUpView(CreateView):

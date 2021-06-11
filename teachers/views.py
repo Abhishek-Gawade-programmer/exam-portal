@@ -10,7 +10,39 @@ from django.views.generic import ListView,DetailView,View,CreateView,UpdateView
 from .forms import TestCreateFrom,SubjectCreateFrom,QuestionCreateFrom
 from django.contrib import messages
 
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
+
+
+
+def allow_to_hod(view_func):
+    def wrapper_func(request,*args, **kwargs):
+        if request.user.is_authenticated:
+            if request.user.is_hod:
+                print('verified hod')
+                return view_func(request,*args, **kwargs)
+            else:
+                return HttpResponse('not a hod')
+
+    return wrapper_func
+
+
+
+def allow_to_teacher(view_func):
+    def wrapper_func(request,*args, **kwargs):
+        if request.user.is_authenticated:
+            if request.user.is_teacher:
+                print('verified techer')
+                return view_func(request,*args, **kwargs)
+            else:
+                return HttpResponse('not a taecher')
+
+    return wrapper_func
+
+
+@allow_to_teacher
+@login_required
 def create_new_test(request,pk):
 	subject=Subject.objects.get(pk=pk)
 	testcreatefrom = TestCreateFrom()
@@ -30,7 +62,8 @@ def create_new_test(request,pk):
 	return render(request,'teachers/create_new_test.html',{'testcreatefrom':testcreatefrom})
 
 
-
+@login_required
+@allow_to_hod
 def create_new_subject(request):
 	subjectcreatefrom = SubjectCreateFrom()
 	if request.method == 'POST':
@@ -45,29 +78,31 @@ def create_new_subject(request):
 	return render(request,'teachers/create_new_subject.html',{'subjectcreatefrom':SubjectCreateFrom})
 
 
-
-
+@allow_to_hod
+@login_required
 def subject_list_view(request):
     all_subject=Subject.objects.all()
     return render(request,'teachers/all_subject_list.html',
     			{'all_subject':all_subject})
 
-
+@allow_to_teacher
+@login_required
 def subject_detail_view(request,pk):
     subject=Subject.objects.get(pk=pk)
     test_in_subject=Test.objects.filter(subject=subject)
     return render(request,'teachers/subject_detail.html',
     			{'subject':subject,'test_in_subject':test_in_subject})
 
-
+@allow_to_teacher
+@login_required
 def test_detail_view(request,pk):
     test=Test.objects.get(pk=pk)
     ques_in_test=Question.objects.filter(test=test)
     return render(request,'teachers/test_detail.html',
     			{'test':test,'ques_in_test':ques_in_test})
 
-
-
+@allow_to_teacher
+@login_required
 def create_new_question(request,test_id):
 	test=Test.objects.get(id=test_id)
 	questioncreatefrom = QuestionCreateFrom()
@@ -84,7 +119,8 @@ def create_new_question(request,test_id):
 	return render(request,'teachers/create_new_question.html',{'questioncreatefrom':questioncreatefrom,'test':test})
 
 
-
+@login_required
+@allow_to_hod
 def subject_update_view(request, pk):
  
     subject_object = get_object_or_404(Subject, id = pk)
@@ -103,8 +139,8 @@ def subject_update_view(request, pk):
     			'subject_update_form':subject_update_form,'subject':subject_object})
 
 
-
-
+@allow_to_teacher
+@login_required
 def test_update_view(request, pk):
  
     test_object = get_object_or_404(Test, id = pk)
@@ -123,8 +159,8 @@ def test_update_view(request, pk):
     return render(request, "teachers/test_update_form.html", {
     			'test_update_form':test_update_form,'test':test_object})
 
-
-
+@allow_to_teacher
+@login_required
 def question_update_view(request, pk):
  
     question_object = get_object_or_404(Question, id = pk)

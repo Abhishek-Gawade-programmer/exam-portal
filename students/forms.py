@@ -7,6 +7,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
 
+
+
+
+
+
+
+
 class StudentSignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, label='First Name',widget=forms.TextInput,required=True)
     last_name = forms.CharField(max_length=30, label='Last Name',widget=forms.TextInput,required=True)
@@ -31,6 +38,7 @@ class StudentSignUpForm(UserCreationForm):
 
     @transaction.atomic
     def save(self):
+        
         user = super().save(commit=False)
         user.is_student = True
         user.first_name=self.cleaned_data.get('first_name')
