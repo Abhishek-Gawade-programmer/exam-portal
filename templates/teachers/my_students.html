@@ -20,13 +20,18 @@
       <tbody>
             {% for student in  my_students%}
                     <tr>
-                          <th scope="row">{{student.college_rollno}}</th>
+                          <th scope="row">
+                            <a href="">
+                              <button type="button" class="btn btn-dark btn-sm">{{student.college_rollno}}</button>
+                            </a>
+                            
+                          </th>
 
                           <td>{{student.user.get_full_name}}</td>
 
                           <td>
                             {% for subject in  student.student_subjects.all %}
-                            <h6><span class="badge bg-primary">{{subject.subject_name}}</span></h6>
+                            <span class="badge bg-primary">{{subject.subject_name}}</span>
                             {% endfor %}
 
                           </td>
@@ -34,10 +39,21 @@
                           <td>{{student.user.email}}</td>
 
                           <td>
-                            <button type="button" class="btn btn-danger btn-sm px-3">
-                              <i class="fas fa-times"></i>
-                            </button>
-                             <button type="button" class="btn btn-secondary btn-sm px-3">
+                            {% if student.verify %}
+                            <a href="{% url 'verify_student' student.pk %}">
+                              <button type="button" class="btn btn-success btn-sm px-3 mt-2" data-mdb-toggle="tooltip" title="Verified Student">
+                                <i class="fas fa-check"></i>
+                              </button></a>
+                            {% else %}
+                              <a href="{% url 'verify_student' student.pk %}">
+                                   <button type="button" class="btn btn-danger btn-sm px-3  mt-2" data-mdb-toggle="tooltip" title="Click Here To verify this student">
+                                    <i class="fas fa-times"></i>
+                                  </button>
+                              </a>                         
+
+
+                            {% endif %}
+                             <button type="button" class="btn btn-secondary btn-sm px-3 mt-2">
                               <i class="fas fa-pencil-alt"></i>
                             </button>
                           </td>

@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (initial_setup,save_question,navigation_question,
                 get_all_question_details,toogle_bookmark,report_question,
                 submit_exam,StudentSignUpView,student_dashboard,student_subject_detail,
+                
                 )
 
 

@@ -209,3 +209,38 @@ def show_all_student(request):
 	return render(request, "teachers/my_students.html", {
     			'my_students':my_students})
 
+@allow_to_teacher
+@login_required
+def verify_the_student(request,pk):
+
+	current_student=get_object_or_404(Student, pk = pk)
+	if current_student.verify:
+		current_student.verify=False
+		messages.error(request, f" Roll No:{current_student.college_rollno} has been Unverified successfully !!")
+	else:
+		current_student.verify=True
+		messages.success(request, f" Roll No:{current_student.college_rollno} has been Verified successfully !!")
+	current_student.save()
+	#email to student that verification is done
+	return redirect("my_students")
+
+
+@allow_to_teacher
+@login_required
+def test_update_view(request, pk):
+ 
+    current_student=get_object_or_404(Student, pk = pk)
+ 
+    test_update_form = TestCreateFrom(request.POST or None, instance = test_object)
+
+    if test_update_form.is_valid():
+    	# edit_test_update_form=test_update_form.save(commit=False)
+    	# edit_test_update_form.subject=test_object.subject
+    	# edit_test_update_form.teacher=request.user
+    	# edit_test_update_form.save()
+    	messages.success(request, f"{test_object.test_title} has been Updated successfully !!")
+    	return redirect("subject_detail",pk=test_object.subject.id)
+
+ 
+    return render(request, "teachers/test_update_form.html", {
+    			'test_update_form':test_update_form,'test':test_object})
