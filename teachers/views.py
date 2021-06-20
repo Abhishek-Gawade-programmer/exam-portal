@@ -2,7 +2,6 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.http import JsonResponse, HttpResponse
 
 from students.models import *
-from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
 from django.views.generic import ListView,DetailView,View,CreateView,UpdateView
@@ -32,11 +31,14 @@ def allow_to_hod(view_func):
 def allow_to_teacher(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.is_teacher:
-                print('verified techer')
+            if request.user.is_teacher: 
                 return view_func(request,*args, **kwargs)
             else:
-                return HttpResponse('not a taecher')
+            	if request.user.is_hod:
+            		pass
+            	return HttpResponse('not a taecher')
+        else:
+         	return redirect("login")
 
     return wrapper_func
 
@@ -59,11 +61,13 @@ def create_new_test(request,pk):
 			messages.success(request, f"Test {edit_testcreatefrom.test_title} has been created add question in it")
 			return redirect("subject_detail",pk=subject.id)
 
-	return render(request,'teachers/create_new_test.html',{'testcreatefrom':testcreatefrom})
+	return render(request,'teachers/create_new_test.html',
+		{'testcreatefrom':testcreatefrom})
 
 
-@login_required
 @allow_to_hod
+@login_required
+# @allow_to_hod
 def create_new_subject(request):
 	subjectcreatefrom = SubjectCreateFrom()
 	if request.method == 'POST':
@@ -73,14 +77,27 @@ def create_new_subject(request):
 			edit_subjectcreatefrom.hod=request.user
 			edit_subjectcreatefrom.save()
 			messages.success(request, f"New Subject :: {edit_subjectcreatefrom.subject_name} has been created successfully")
-			return redirect("all_subject")
+			return redirect("my_subject")
 
 	return render(request,'teachers/create_new_subject.html',{'subjectcreatefrom':SubjectCreateFrom})
 
 
-@allow_to_hod
+
+@allow_to_teacher
 @login_required
 def subject_list_view(request):
+    all_subject=Subject.objects.filter(teachers__in=[request.user,])
+    return render(request,'teachers/all_subject_list.html',
+    			{'all_subject':all_subject})
+
+# def show():
+# 	pass
+
+
+
+@allow_to_hod
+@login_required
+def for_hod_subject_list_view(request):
     all_subject=Subject.objects.all()
     return render(request,'teachers/all_subject_list.html',
     			{'all_subject':all_subject})
@@ -118,25 +135,27 @@ def create_new_question(request,test_id):
 
 	return render(request,'teachers/create_new_question.html',{'questioncreatefrom':questioncreatefrom,'test':test})
 
-
+@allow_to_teacher
 @login_required
-@allow_to_hod
+# @allow_to_hod
 def subject_update_view(request, pk):
  
     subject_object = get_object_or_404(Subject, id = pk)
  
-    subject_update_form = SubjectCreateFrom(request.POST or None, instance = subject_object)
+    subject_update_form = SubjectCreateFrom(request.POST or None, 
+    	instance = subject_object)
 
     if subject_update_form.is_valid():
     	edit_subject_update_form=subject_update_form.save(commit=False)
     	edit_subject_update_form.hod=request.user
     	edit_subject_update_form.save()
     	messages.success(request, f"{edit_subject_update_form.subject_name} has been Updated successfully !!")
-    	return redirect("all_subject")
+    	return redirect("my_subject")
 
  
     return render(request, "teachers/subject_update_form.html", {
-    			'subject_update_form':subject_update_form,'subject':subject_object})
+    			'subject_update_form':subject_update_form,
+    			'subject':subject_object})
 
 
 @allow_to_teacher
@@ -165,7 +184,8 @@ def question_update_view(request, pk):
  
     question_object = get_object_or_404(Question, id = pk)
  
-    question_update_form = QuestionCreateFrom(request.POST or None, instance = question_object)
+    question_update_form = QuestionCreateFrom(request.POST or None, 
+    	instance = question_object)
 
     if question_update_form.is_valid():
     	edit_question_update_form=question_update_form.save(commit=False)
@@ -178,3 +198,14 @@ def question_update_view(request, pk):
  
     return render(request, "teachers/question_update_form.html", {
     			'question_update_form':question_update_form,'question':question_object})
+
+
+
+@allow_to_teacher
+@login_required
+def show_all_student(request):
+	current_teacher=Teacher.objects.get(user=request.user)
+	my_students=Student.objects.filter(college_rollno__icontains=current_teacher.class_teacher_roll)
+	return render(request, "teachers/my_students.html", {
+    			'my_students':my_students})
+

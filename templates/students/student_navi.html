@@ -1,7 +1,8 @@
+
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Teacher Dashboard</a>
+    <a class="navbar-brand" href="#">Student Dashboard</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -15,29 +16,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-        {% if user.is_hod %}
-                <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="{% url 'all_subject' %}">All Subjects</a>
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="">See Result</a>
         </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'subject_create' %}">Create Subject</a>
-          </li>
-
-           <li class="nav-item">
-            <a class="nav-link" href="{% url 'subject_create' %}">All Teacher</a>
-          </li>
-        {% elif user.is_teacher %}
-                <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="{% url 'my_subject' %}">My Subjects</a>
+        <li class="nav-item">
+          <a class="nav-link" href="">some thing</a>
         </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_students' %}">All Students</a>
-          </li)
-          
-
-        {% endif %}
 
            {% block navibar %}
         <li class="nav-item">
@@ -54,14 +38,18 @@
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
-                <a class="dropdown-item" href="{% url 'logout' %}"><button class="btn btn-danger btn-sm">Log Out</button></a>
+
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                    <button class="btn btn-danger btn-sm">Log Out</button>
+                </a>
+                
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li>
                 <li class="nav-item">
-                     
-        </li>
+                  <span></span>
+                </li>
       </ul>
       
       </span>

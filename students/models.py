@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.utils import timezone
 # from django.contrib.auth import get_user_model
 # from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
@@ -35,6 +36,9 @@ class Subject(models.Model):
 class Test(models.Model):
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     test_title =models.CharField(max_length=300,help_text = "Title For Your test <b>Not Subject Name</b>")
+    exam_start_time=models.DateTimeField()
+    exam_end_time=models.DateTimeField()
+
     duration=models.TimeField(default='01:00:00',help_text = "Please use the following format: <em>HH-MM-SS</em>.")
     make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")
     total_question=models.IntegerField(default=0,help_text = "Total Questions You Created")
@@ -46,6 +50,17 @@ class Test(models.Model):
     
     def __str__(self):
         return self.test_title+ str(self.duration)
+
+    def allow_student_for_exam(self,student):
+        time=timezone.now()
+
+        if UserQuestionList.objects.filter(student=student,test=self).exists():
+            test_for_student=UserQuestionList.objects.get(student=student,test=self)
+            if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
+                return True
+            else:
+                return False
+        return True
 
 class Question(models.Model):
     id=models.UUIDField(primary_key=True,
@@ -98,6 +113,17 @@ class UserQuestionList(models.Model):
 
 
 
+class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    teacher_subjects = models.ManyToManyField(Subject,related_name='teacher_subjects')
+    phone_number=models.CharField(max_length=20)
+    class_teacher_roll =models.CharField(max_length=10,)
+    verify=models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        self.class_teacher_roll = self.class_teacher_roll.upper()
+        super().save(*args, **kwargs)
+
 
 
 
@@ -105,17 +131,13 @@ class UserQuestionList(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_subjects = models.ManyToManyField(Subject,related_name='student_subjects')
-    college_rollno =models.CharField(max_length=10,)
+    college_rollno =models.CharField(max_length=10,unique=True,error_messages={'unique':"This rollno has already been registered."})
     phone_number=models.CharField(max_length=20)
     verify=models.BooleanField(default=False)
-
-
-class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    teacher_subjects = models.ManyToManyField(Subject,related_name='teacher_subjects')
-    phone_number=models.CharField(max_length=20)
-    verify=models.BooleanField(default=False)
-
+    
+    def save(self, *args, **kwargs):
+        self.college_rollno = self.college_rollno.upper()
+        super().save(*args, **kwargs)
 
 
 

@@ -9,6 +9,8 @@
     <div class="container">
           <div class='container'>
             <h1>{% trans "Sign In" %}</h1>
+            <p> Do not have account please create new account
+            <a href="{% url 'signup' %}">Create new account here</a></p>
 
 
 
@@ -18,7 +20,7 @@
                   {% if redirect_field_value %}
                   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                   {% endif %}
-                  <a class="btn btn-default" href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}  </a>
+                  <a class="btn btn-dark" href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}  </a>
                   <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
                 </form>
           </div>

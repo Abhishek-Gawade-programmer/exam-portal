@@ -1,0 +1,39 @@
+{% extends 'students/student_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h2 class="h1 fw-bold text-center">Your  Subjects</h2>
+<hr>
+<div class="row">
+<div class="list-group ml-2 mr-2">
+      <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">Students Subjects</h5>
+        </div>
+   
+      </a>
+{% for subject in all_subject %}
+              <a href="{% url 'student_subject_detail' subject.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{subject.subject_name}}  ({{subject.subject_code}})</h5>
+                  <small class="text-muted">3 days ago</small>
+                </div>
+
+                <small class="text-muted"> Subject Teachers  :
+                    {% for teacher_subject in subject.teachers.all %} 
+                        {{teacher_subject.get_full_name}}  , {% endfor %}
+                </small>
+              </a>
+
+
+{% endfor %}
+          
+            </div>
+
+    </div>
+
+
+
+
+ {% endblock content %}

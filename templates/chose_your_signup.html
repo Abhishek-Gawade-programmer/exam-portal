@@ -1,32 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<div class="jumbotron">
+  <h3 class="display-5">Choose Your Type </h3>
+  <p class="lead">Create Your Account on base on your roll in college </p>
 
+   <hr class="my-4">
+    <p>After registering your account the administers will be verify you then you able to login to your dashboards </p>
 
-<div class="row">
-	<h1>ksdfijsndnf</h1>
+    <p class="lead">
+	   <hr class="my-4">
 
-
+		  <a href="{% url 'student_signup' %}" class="btn btn-primary btn-lg mt-4" role="button">Register as a Student</a>
+		  <a href="{% url 'teacher_signup' %}" class="btn btn-dark btn-lg mt-4" role="button">Register as a Teacher</a>
+	
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  {% endblock content %}

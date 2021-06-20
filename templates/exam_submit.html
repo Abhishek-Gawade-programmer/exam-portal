@@ -20,7 +20,7 @@
       <td>{{exam_info.end_time}}  </td>
       <td>{{exam_info.test.subject.subject_name}}  </td>
       <td> {{exam_info.test.test_title}}  </td>
-      <td> {{exam_info.test.max_question}}  </td>
+      <td> {{exam_info.test.total_question}}  </td>
       <td> {{tick_question}}  </td>
       
     </tr>
@@ -28,8 +28,8 @@
 
   </tbody>
 </table>
+ <a href="{% url 'student_dashboard' %}" class="btn btn-primary btn-lg btn-block">Go to Your Dashboard</a>
  </div>
-
 
 
 

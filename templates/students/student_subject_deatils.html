@@ -1,0 +1,69 @@
+{% extends 'students/student_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load templates_tags %}
+
+{% block content %}
+<h4 class="h3 fw-bold">All Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> 
+</h4>
+<hr>
+<style type="text/css">
+    .list-group-item.active {
+        z-index: 2;
+        color: #fff;
+        background-color: black;
+        border-color: black;
+    }
+</style>
+<div class="row">
+{% for test in test_in_subject %}
+     <div class="form-group col-md-6 mb-3">
+              <ul class="list-group">
+                  <li class="list-group-item active" aria-current="true">
+                  {{test.test_title}}
+                   {% if   request.user|eligible_student_test:test.id  %}
+                      <a href="{% url 'quiz-list' test.pk %}">
+                            <span class="float-right btn btn-danger  btn-sm btn-rounded">
+                               <i class="fas fa-play"></i> Start Test
+                            </span>
+                        </a>
+                {% endif %}
+                                  
+
+                </li>
+                    <li class="list-group-item">
+                    <span class="fw-bold float-left">Test Duration</span>
+                    <span class="fw-bold float-right"> {{test.duration|date:"h:i:s" }}</span><em> (HH:MM:SS)</em>
+                  </li>
+                  
+
+                <li class="list-group-item">
+                    <span class="fw-bold float-left">Total Questions </span>
+                    <span class="fw-bold float-right">{{test.total_question}}</span>
+                  </li>
+                <li class="list-group-item">
+                    <span class="fw-bold float-left">Maximum  marks </span>
+                    <span class="fw-bold float-right">{{test.max_mark}}</span>
+                  </li>
+                <li class="list-group-item">
+                    <span class="fw-bold float-left">Passing marks </span>
+                    <span class="fw-bold float-right">{{test.passing_marks}}</span>
+                  </li>
+
+        
+            </ul>
+
+    </div>
+
+{% endfor %}
+          
+
+    </div>
+
+          
+
+
+
+
+
+ {% endblock content %}

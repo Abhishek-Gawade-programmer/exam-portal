@@ -31,10 +31,17 @@ class StudentSignUpForm(UserCreationForm):
     phone_number = forms.CharField(max_length=10,
     	widget=forms.NumberInput)
 
+    def clean_college_rollno(self):
+        college_rollno = self.cleaned_data['college_rollno']
+        if Student.objects.filter(college_rollno=college_rollno).exists():
+            raise forms.ValidationError("rollno already exists")
+        return college_rollno
+
 
 
     class Meta(UserCreationForm.Meta):
         model = User
+
 
     @transaction.atomic
     def save(self):

@@ -5,7 +5,7 @@ from .models import *
 from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
-
+from django.http import HttpResponseRedirect
 
 #MULTIPLE AUTHENTICATION 
 from django.contrib.auth import login
@@ -16,8 +16,10 @@ from django.contrib.auth.decorators import login_required
 from .forms import StudentSignUpForm,TeacherSignUpForm
 
 from verify_email.email_handler import send_verification_email
+from django.contrib.auth import logout
 
 
+from django.contrib import messages
 
 class StudentSignUpView(CreateView):
     model = User
@@ -51,9 +53,17 @@ class TeacherSignUpView(CreateView):
         user = form.save()
         # login(self.request, user)
         # return redirect('students:quiz_list')
-        return HttpResponse('nice work again')
+        return redirect("student_dashboard") 
 
-
+@login_required
+def redirect_after_login(request):
+    if request.user.is_student:
+        return redirect("student_dashboard") 
+    elif request.user.is_teacher:
+        return redirect("my_subject")
+    elif request.user.is_hod:
+        
+        return redirect("all_subject") 
 
 
 
@@ -70,28 +80,51 @@ def allow_to_students(view_func):
 
 
 
+@login_required
+@allow_to_students
+def student_dashboard(request):
+    current_student=Student.objects.get(user=request.user)
+    if current_student.verify:
+        
+        # messages.success(request, f"successfully login as {request.user.username}")
+        all_subject=current_student.student_subjects.all()
+        return render(request,'students/student_dashboard.html',{
+            'all_subject':all_subject
+            })
+    messages.error(request, f"Your account is not verify yet")
+    logout(request) 
+    return redirect("login") 
+
+@login_required
+@allow_to_students
+def student_subject_detail(request,pk):
+    current_student=Student.objects.get(user=request.user)
+    if current_student.verify:
+        subject=Subject.objects.get(pk=pk)
+        test_in_subject=Test.objects.filter(subject=subject)
+
+        return render(request,'students/student_subject_deatils.html',{
+            'subject':subject,
+            'test_in_subject':test_in_subject
+            })
+    messages.error(request, f"Your account is not verify yet")
+    logout(request) 
+    return redirect("login") 
 
 
 
 
-
-
-
-
-
-
-
-TEST_ID=1
-current_test=Test.objects.get(id=TEST_ID)
 
 
 @login_required
 @allow_to_students
-def initial_setup(request):
+def initial_setup(request,test_id):
+    global current_test
+    current_test=Test.objects.get(id=test_id)
     all_user_question=Question.objects.filter(test=current_test).order_by('?')[:current_test.total_question]
     #get the test
     check_test_given=UserQuestionList.objects.filter(test=current_test,student=request.user).exists()
-    print(all_user_question)
+    print(check_test_given)
 
 
     if  not check_test_given:
@@ -115,8 +148,9 @@ def initial_setup(request):
 
         return render(request,'home.html')
     else:
-        check_test_given=UserQuestionList.objects.get(test=current_test,student=request.user)
-        if check_test_given.end_time:
+        countiune_check_test_given=UserQuestionList.objects.get(test=current_test,student=request.user)
+
+        if countiune_check_test_given.end_time and not(current_test.allow_student_for_exam(request.user)):
             return render(request,'403_not_allowed.html')
         else:
             return render(request,'home.html')
@@ -125,7 +159,7 @@ def initial_setup(request):
 def save_question(request):
     if request.method=='POST' :
         question=get_object_or_404(Question,id=request.POST.get('pk'))
-        student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
+        student_answer=StudentAnswer.objects.get(question=question,test=current_test,student=request.user)
         student_answer.student_option=request.POST.get('option')
         student_answer.save()
 
@@ -142,7 +176,7 @@ def get_all_question_details(request):
 
     if request.method=='GET' :
         all_question_student=json.loads(UserQuestionList.objects.get(
-                        student=request.user).test_question)
+                        student=request.user,test=current_test).test_question)
 
         all_question_json={}
         for i in range(len(all_question_student)):
@@ -169,13 +203,13 @@ def navigation_question(request):
             },safe=False)
 
     try :
-        question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
+        question_id=json.loads(UserQuestionList.objects.get(student=request.user,test=current_test).test_question)[page_number]
     except IndexError:
         return JsonResponse({'success':None},safe=False)
 
     question=get_object_or_404(Question,id=question_id)
 
-    student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
+    student_answer=StudentAnswer.objects.get(question=question,test=current_test,student=request.user)
     student_answer.question_seen=True
     student_answer.save()
 
@@ -192,7 +226,7 @@ def navigation_question(request):
 
         }
     if StudentAnswer.objects.filter(question=question,test=question.test,student=request.user).exists():
-        student_option= StudentAnswer.objects.get(question=question,test=question.test).student_option
+        student_option= StudentAnswer.objects.get(question=question,test=question.test,student=request.user).student_option
         if student_option:
             data_for_new_question[f'option_{student_option}']['student_option']='checked'
 
@@ -204,7 +238,7 @@ def navigation_question(request):
 @allow_to_students
 def toogle_bookmark(request,page_number):
     page_number=page_number-1
-    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user,test=current_test).test_question)[page_number]
     question=get_object_or_404(Question,id=question_id)
 
     student_answer=StudentAnswer.objects.get(question=question,test=question.test,student=request.user)
@@ -231,7 +265,7 @@ def toogle_bookmark(request,page_number):
 @allow_to_students
 def report_question(request,page_number,comment=''):
     page_number=page_number-1
-    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[page_number]
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user,test=current_test).test_question)[page_number]
     question=get_object_or_404(Question,id=question_id)
 
     student_report_question=ReportQuestion.objects.filter(question=question,test=question.test,student=request.user)
@@ -254,11 +288,48 @@ def report_question(request,page_number,comment=''):
 @login_required
 @allow_to_students
 def submit_exam(request):
-    question_id=json.loads(UserQuestionList.objects.get(student=request.user).test_question)[0]
+    question_id=json.loads(UserQuestionList.objects.get(student=request.user,test=current_test).test_question)[0]
     question=get_object_or_404(Question,id=question_id)
-    x=UserQuestionList.objects.get(test=question.test,student=request.user)
+    x=UserQuestionList.objects.get(test=current_test,student=request.user)
     x.end_time=timezone.now()
     x.save()
     tick_question=StudentAnswer.objects.filter(student=request.user,test=question.test).exclude(student_option='').count()
 
     return render(request,'exam_submit.html',{'exam_info':x,'tick_question':tick_question})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
