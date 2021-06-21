@@ -65,6 +65,18 @@ class Test(models.Model):
                 return False
         return True
 
+    def get_total_questions_added(self,student):
+        time=timezone.now()
+
+        if UserQuestionList.objects.filter(student=student,test=self).exists():
+            test_for_student=UserQuestionList.objects.get(student=student,test=self)
+            if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
+                return True
+            else:
+                return False
+        return True
+
+
 class Question(models.Model):
     id=models.UUIDField(primary_key=True,
                     default=uuid.uuid4,

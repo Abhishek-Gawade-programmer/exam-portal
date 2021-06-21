@@ -247,3 +247,13 @@ def student_update_view(request, pk):
     return render(request, "teachers/student_update_form.html", {
     			'student_verfiy_form':student_verfiy_form,'current_student':current_student})
 
+
+@allow_to_teacher
+@login_required
+def delete_the_question(request, pk):
+    question_object = get_object_or_404(Question, id = pk)
+    messages.error(request, f"{question_object.question_title} has been Delete successfully !!")
+    test=question_object.test
+    question_object.delete()
+    question_object.save()
+    return redirect("test_detail",pk=test.id)
