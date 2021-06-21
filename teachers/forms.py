@@ -35,3 +35,13 @@ class QuestionCreateFrom(forms.ModelForm):
         widgets = {
 
         }
+
+
+class StudentVerificationFrom(forms.ModelForm):
+    class Meta:
+        model=Student
+        exclude=('user','verify')
+
+        widgets = {
+
+        }

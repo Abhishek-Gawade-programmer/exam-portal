@@ -3,7 +3,7 @@ from .views import (create_new_test,create_new_subject,
                 subject_list_view,subject_detail_view,
                 create_new_question,test_detail_view,subject_update_view,
                 test_update_view,question_update_view,for_hod_subject_list_view,show_all_student,
-                verify_the_student)
+                verify_the_student,student_update_view)
 
 from students.views import TeacherSignUpView
 urlpatterns = [
@@ -19,6 +19,7 @@ urlpatterns = [
 
         path('all-subject/',for_hod_subject_list_view,name ='all_subject'),
         path('subject-detail/<int:pk>/',subject_detail_view,name ='subject_detail'),
+        path('subject-update/<int:pk>/',student_update_view,name ='subject_update'),
 
          path('my-students/',show_all_student,name ='my_students'),
          

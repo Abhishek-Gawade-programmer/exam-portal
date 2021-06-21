@@ -53,9 +53,10 @@
 
 
                             {% endif %}
+                            <a href="{% url 'subject_update' student.pk %}">
                              <button type="button" class="btn btn-secondary btn-sm px-3 mt-2">
                               <i class="fas fa-pencil-alt"></i>
-                            </button>
+                            </button></a>
                           </td>
                     </tr>
             {% endfor %}

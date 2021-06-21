@@ -6,7 +6,7 @@ from django.utils import timezone
 import json
 from django.views.generic import ListView,DetailView,View,CreateView,UpdateView
 
-from .forms import TestCreateFrom,SubjectCreateFrom,QuestionCreateFrom
+from .forms import TestCreateFrom,SubjectCreateFrom,QuestionCreateFrom,StudentVerificationFrom
 from django.contrib import messages
 
 from django.contrib.auth import login
@@ -227,20 +227,18 @@ def verify_the_student(request,pk):
 
 @allow_to_teacher
 @login_required
-def test_update_view(request, pk):
+def student_update_view(request, pk):
  
     current_student=get_object_or_404(Student, pk = pk)
  
-    test_update_form = TestCreateFrom(request.POST or None, instance = test_object)
+    student_verfiy_form = StudentVerificationFrom(request.POST or None, instance = current_student)
 
-    if test_update_form.is_valid():
-    	# edit_test_update_form=test_update_form.save(commit=False)
-    	# edit_test_update_form.subject=test_object.subject
-    	# edit_test_update_form.teacher=request.user
-    	# edit_test_update_form.save()
-    	messages.success(request, f"{test_object.test_title} has been Updated successfully !!")
-    	return redirect("subject_detail",pk=test_object.subject.id)
+    if student_verfiy_form.is_valid():
+    	edit_student_verfiy_form=student_verfiy_form.save(commit=False)
+    	edit_student_verfiy_form.save()
+    	messages.success(request, f"{edit_student_verfiy_form.college_rollno} has been Updated successfully !!")
+    	# return redirect("subject_detail",pk=test_object.subject.id)
 
  
-    return render(request, "teachers/test_update_form.html", {
-    			'test_update_form':test_update_form,'test':test_object})
+    return render(request, "teachers/student_update_form.html", {
+    			'student_verfiy_form':student_verfiy_form,'current_student':current_student})

@@ -27,7 +27,9 @@ class Subject(models.Model):
     teachers=models.ManyToManyField(User,related_name='subject_teachers',help_text = "Use <b>control + arrow</b> click to select multiple teachers",verbose_name='Select Teachers Want To Include')
     created =models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
-    
+
+
+
 
     def __str__(self):
         return self.subject_name
@@ -119,6 +121,8 @@ class Teacher(models.Model):
     phone_number=models.CharField(max_length=20)
     class_teacher_roll =models.CharField(max_length=10,)
     verify=models.BooleanField(default=False)
+
+
 
     def save(self, *args, **kwargs):
         self.class_teacher_roll = self.class_teacher_roll.upper()
