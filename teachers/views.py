@@ -120,7 +120,8 @@ def test_detail_view(request,pk):
 
 @allow_to_teacher
 @login_required
-def create_new_question(request,test_id):
+def create_new_question(request,test_id,add_another=False):
+	print(add_another,'555555555555555')
 	test=Test.objects.get(id=test_id)
 	questioncreatefrom = QuestionCreateFrom()
 	if request.method == 'POST':
@@ -131,7 +132,10 @@ def create_new_question(request,test_id):
 			edit_questioncreatefrom.test=test
 			edit_questioncreatefrom.save()
 			messages.success(request, f"New Question creaeted :: {edit_questioncreatefrom.question_title} has been created successfully")
-			return redirect("test_detail",pk=test.id)
+			if not add_another:
+				return redirect("test_detail",pk=test.id)
+			else:
+				return redirect("question_create",test_id=test.id)
 
 	return render(request,'teachers/create_new_question.html',{'questioncreatefrom':questioncreatefrom,'test':test})
 
@@ -242,3 +246,4 @@ def student_update_view(request, pk):
  
     return render(request, "teachers/student_update_form.html", {
     			'student_verfiy_form':student_verfiy_form,'current_student':current_student})
+

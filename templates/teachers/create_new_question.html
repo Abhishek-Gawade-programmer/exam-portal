@@ -15,13 +15,37 @@
       <div class="form-group col-md-6 mb-0">{{ field|as_crispy_field }}</div>
       {% endfor %}
     </div>
-    <button
-      type="submit"
-      name="Create Test"
-      class="btn btn-secondary btn-block btn-lg"
-    >
-      <i class="fas fa-plus-circle"></i> Create Question
-    </button>
+
+<div class="row">
+          <div class="col-md-6 mt-3">
+              <button
+                type="submit"
+                name="Create Test"
+                class="btn btn-secondary btn-block btn-lg">
+                <i class="fas fa-plus-circle"></i> Create Question
+              </button>
+          </div>
+
+          <div class="col-md-6 mt-3">
+              <button
+                type="submit"
+                name="Create Test"
+                formaction="{% url 'question_create_add_another' test.id 'new'%}"
+                class="btn btn-primary btn-block btn-lg">
+               <i class="fas fa-save"></i> Save &  <i class="fas fa-plus-circle"></i>   Add Another
+              </button>
+          </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
 
     <br >
   </form>

@@ -23,10 +23,25 @@
                     <span class="fw-bold float-left">Subject Code </span>
                     <span class="fw-bold float-right">{{subject.subject_code}}</span>
                   </li>
-                  <li class="list-group-item text-center">Teachers Assigned</li>
-                  {% for teacher_subject in subject.teachers.all %}
-                    <li class="list-group-item">{{forloop.counter}}) {{teacher_subject}}</li>
-                    {% endfor %}
+                   <li class="list-group-item">
+                    <span class="fw-bold float-left">Teachers Assigned </span>
+                    <span class="fw-bold float-right">
+                      {% for teacher_subject in subject.teachers.all %}
+                      <span type="button" class="badge bg-dark text-light">
+                          <span class="badge bg-danger ms-2">{{forloop.counter}}</span>
+                          {{teacher_subject}}
+                      </span>
+                       
+                      {% endfor %}
+                    </span>
+                  </li>
+               <li class="list-group-item">
+
+                    <span class="fw-bold float-left">Number Of Tests</span>
+                    <span class="fw-bold float-right">{{subject.no_of_test_in_subject}}</span>
+                  </li>
+        
+                    
             </ul>
 
     </div>

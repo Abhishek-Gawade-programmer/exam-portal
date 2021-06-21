@@ -29,7 +29,8 @@ class Subject(models.Model):
     updated=models.DateTimeField(auto_now=True)
 
 
-
+    def no_of_test_in_subject(self):
+        return Test.objects.filter(subject=self).count()
 
     def __str__(self):
         return self.subject_name
@@ -76,7 +77,7 @@ class Question(models.Model):
     option_2=models.CharField(max_length=200,help_text='Option 2 should not to be repeat')
     option_3=models.CharField(max_length=200,help_text='Option 3 should not to be repeat')
     option_4=models.CharField(max_length=200,help_text='Option 4 should not to be repeat')
-    question_marks=models.FloatField(default=1,help_text='Marks for this question <b>Default is 1.0</b>')
+    # question_marks=models.FloatField(default=1,help_text='Marks for this question <b>Default is 1.0</b>')
     test= models.ForeignKey(Test,on_delete=models.CASCADE)
     correct_option = models.CharField(choices=CORRECT_ANSWER,verbose_name='Correct Option',max_length=1,default='')
     created =models.DateTimeField(auto_now_add=True)

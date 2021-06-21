@@ -11,6 +11,7 @@ urlpatterns = [
         path('<int:pk>/test-create/',create_new_test,name ='test_create'),
 
         path('<int:test_id>/question-create/',create_new_question,name ='question_create'),
+        path('<int:test_id>/<str:add_another>/question-create/',create_new_question,name ='question_create_add_another'),
 
         path('subject-create/',create_new_subject,name ='subject_create'),
         path('my-subject/',subject_list_view,name ='my_subject'),
