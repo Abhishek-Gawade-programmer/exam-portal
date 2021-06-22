@@ -36,7 +36,7 @@
                           <td>{{test_detail.question_attempted}}</td>
                           <td>{{test_detail.number_of_correct_answers}}</td>
                           <td>
-                            <a href="#" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">
+                            <a href="{% url 'student_exam_result' test_detail.test.id current_student.pk   %}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">
                               Show Result</a></td>
                     </tr>
             {% endfor %}

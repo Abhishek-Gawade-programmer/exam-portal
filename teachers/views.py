@@ -269,7 +269,7 @@ def delete_the_question(request, pk):
 @allow_to_teacher
 @login_required
 def student_all_test_detail(request, pk):
-    current_student = get_object_or_404(Student, user = pk)
+    current_student = get_object_or_404(Student, pk = pk)
     test_given_by_student=current_student.get_all_given_test_details()
     return render(request, "teachers/test_given_by_student.html", {
     			'test_given_by_student':test_given_by_student,
@@ -280,7 +280,17 @@ def student_all_test_detail(request, pk):
 @login_required
 def student_exam_result(request, test_id,student_id):
 
-    current_student = get_object_or_404(Student, user = student_id)
-    current_test= get_object_or_404(Student, pk = test_id)
-    print(current_test,current_student)
-    return render(request, "teachers/test_result_of_student.html", {})
+    current_student = get_object_or_404(Student, pk = student_id)
+    current_test= get_object_or_404(Test, pk = test_id)
+    student_questions=UserQuestionList.objects.get(student=current_student.user,test=current_test)
+    student_questions_with_sr=json.loads(student_questions.test_question)
+    all_student_questions_with_sr=[]  
+    for student_question in student_questions_with_sr:
+    	question= get_object_or_404(Question, id = student_question)
+    	all_student_questions_with_sr.append(
+	    					StudentAnswer.objects.get(
+	    					question=question,
+	    					student=current_student.user,test=current_test
+    						))
+    score=f'{student_questions.number_of_correct_answers()}/{current_test.total_question}'
+    return render(request, "teachers/test_result_of_student.html", {'all_student_questions':all_student_questions_with_sr,'score':score})

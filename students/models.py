@@ -50,6 +50,7 @@ class Test(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
     created =models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
+    show_result=models.BooleanField(default=False)
     
     def __str__(self):
         return self.test_title+ str(self.duration)
