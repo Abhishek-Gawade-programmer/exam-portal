@@ -65,16 +65,8 @@ class Test(models.Model):
                 return False
         return True
 
-    def get_total_questions_added(self,student):
-        time=timezone.now()
-
-        if UserQuestionList.objects.filter(student=student,test=self).exists():
-            test_for_student=UserQuestionList.objects.get(student=student,test=self)
-            if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
-                return True
-            else:
-                return False
-        return True
+    def get_total_questions(self):
+        return Question.objects.filter(test=self).count()
 
 
 class Question(models.Model):
@@ -107,7 +99,7 @@ class StudentAnswer(models.Model):
     bookmark=models.BooleanField(default=False)
     student_option = models.CharField(choices=CORRECT_ANSWER,verbose_name="Student's Option",max_length=1,default='',blank=True,null=True)
     def __str__(self):
-        return self.question.question_title+ str(self.student_option)
+        return  str(self.student_option)
 
     
 
@@ -124,6 +116,27 @@ class UserQuestionList(models.Model):
     start_time=models.DateTimeField()
     end_time=models.DateTimeField(null=True)
     test_question=models.TextField(max_length=2000)
+
+    def question_attempted(self):
+        question_attempted_count=StudentAnswer.objects.filter(student=self.student,test=self.test
+                                    ).exclude(student_option=None).count()
+        return question_attempted_count
+    def number_of_correct_answers(self):
+        all_question_attempted=StudentAnswer.objects.filter(student=self.student,test=self.test
+                                    ).exclude(student_option=None)
+        correct_answer=0
+        for student_answer in all_question_attempted:
+            if student_answer.student_option==student_answer.question.correct_option:
+                correct_answer+=1
+
+            # print(student_answer.question.student_option)
+        return correct_answer
+
+        
+
+
+
+
 
 
 
@@ -142,15 +155,15 @@ class Teacher(models.Model):
         super().save(*args, **kwargs)
 
 
-
-
-
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_subjects = models.ManyToManyField(Subject,related_name='student_subjects')
     college_rollno =models.CharField(max_length=10,unique=True,error_messages={'unique':"This rollno has already been registered."})
     phone_number=models.CharField(max_length=20)
     verify=models.BooleanField(default=False)
+
+    def get_all_given_test_details(self):
+        return UserQuestionList.objects.filter(student=self.user,test__make_active=True)
     
     def save(self, *args, **kwargs):
         self.college_rollno = self.college_rollno.upper()

@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.models import User
 
 from students.models import *
 from django.utils import timezone
@@ -238,9 +239,15 @@ def student_update_view(request, pk):
     student_verfiy_form = StudentVerificationFrom(request.POST or None, instance = current_student)
 
     if student_verfiy_form.is_valid():
+    	print(student_verfiy_form.cleaned_data,student_verfiy_form.cleaned_data['student_subjects'][0])
     	edit_student_verfiy_form=student_verfiy_form.save(commit=False)
+    	current_student.student_subjects.clear()
+    	for _ in student_verfiy_form.cleaned_data['student_subjects']:
+    		current_student.student_subjects.add(_)
+    	current_student.save()
     	edit_student_verfiy_form.save()
     	messages.success(request, f"{edit_student_verfiy_form.college_rollno} has been Updated successfully !!")
+    	return redirect("my_students")
     	# return redirect("subject_detail",pk=test_object.subject.id)
 
  
@@ -257,3 +264,23 @@ def delete_the_question(request, pk):
     question_object.delete()
     question_object.save()
     return redirect("test_detail",pk=test.id)
+
+
+@allow_to_teacher
+@login_required
+def student_all_test_detail(request, pk):
+    current_student = get_object_or_404(Student, user = pk)
+    test_given_by_student=current_student.get_all_given_test_details()
+    return render(request, "teachers/test_given_by_student.html", {
+    			'test_given_by_student':test_given_by_student,
+    			'current_student':current_student})
+
+
+@allow_to_teacher
+@login_required
+def student_exam_result(request, test_id,student_id):
+
+    current_student = get_object_or_404(Student, user = student_id)
+    current_test= get_object_or_404(Student, pk = test_id)
+    print(current_test,current_student)
+    return render(request, "teachers/test_result_of_student.html", {})

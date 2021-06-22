@@ -2,10 +2,13 @@
 {% load static %}
 
 {% block content %}
-
 <h2 class="h1 fw-bold text-center">My Students</h2>
 <hr>
-<div class="table-responsive">
+
+
+
+
+ <div class="table-responsive">
     <table class="table">
       <thead>
         <tr>
@@ -21,7 +24,7 @@
             {% for student in  my_students%}
                     <tr>
                           <th scope="row">
-                            <a href="">
+                            <a href="{% url 'student_all_test_detail' student.pk %}">
                               <button type="button" class="btn btn-dark btn-sm">{{student.college_rollno}}</button>
                             </a>
                             
@@ -64,5 +67,5 @@
 
       </tbody>
     </table>
-</div>
- {% endblock content %}
+</div> 
+{% endblock content %}

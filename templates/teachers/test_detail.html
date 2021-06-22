@@ -3,21 +3,21 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h4 class="h3 fw-bold"> Questions in 
+<h6 class="h4 fw-bold"> Questions in 
     <span style="color:#1E90FF">"{{test.test_title}}"  Test. </span>
     <a href="{% url 'test_update' test.id %}">
-        <button type="button" class="btn btn-secondary  btn-floating"> 
+        <button type="button" class="btn btn-secondary btn-sm btn-floating"> 
             <i class="fas fa-pencil-alt"></i>
         </button>
     </a>
 
-<span class="float-right">
-
+<span class="float-right  pt-2">
     <a href="{% url 'question_create' test.id %}">
-    <button type="button" class="btn btn-dark btn-rounded">Create Question</button></a>
+    <button type="button" class="btn btn-dark btn-rounded btn-sm">Create Question</button></a>
 </span>
-</h4>
-<hr>
+</h6>
+<br>
+<br>
 <style type="text/css">
     .list-group-item.active {
         z-index: 2;
@@ -27,6 +27,8 @@
     }
 </style>
 <div class="row">
+    
+
 {% for que in ques_in_test %}
 
 

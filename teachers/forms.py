@@ -18,7 +18,6 @@ class TestCreateFrom(forms.ModelForm):
         make_active = self.cleaned_data['make_active']
         exam_start_time = self.cleaned_data['exam_start_time']
         now=timezone.now()
-        print(make_active,exam_start_time,timezone.now(),timezone.now() < exam_start_time,)
         if timezone.now() > exam_start_time:
             raise forms.ValidationError("you can't change the active as exam is already start")
         return make_active
@@ -53,5 +52,8 @@ class StudentVerificationFrom(forms.ModelForm):
         exclude=('user','verify')
 
         widgets = {
+            'student_subjects': forms.CheckboxSelectMultiple(
+   
+        ),
 
         }

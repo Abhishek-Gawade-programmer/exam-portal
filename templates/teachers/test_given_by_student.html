@@ -1,0 +1,48 @@
+{% extends 'teachers/teachers_base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 class="h1 fw-bold text-center">Test Given by {{current_student.college_rollno}}</h2>
+<hr>
+
+
+
+
+ <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Subject</th>
+          <th scope="col">Test Name</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">End Time</th>
+          <th scope="col">No Of Question</th>
+          <th scope="col">No of Question Attempted </th>
+          <th scope="col">Correct Answers</th>
+          <th scope="col">View <br>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+            {% for test_detail in  test_given_by_student %}
+                    <tr>
+
+                          <td>{{test_detail.test.subject.subject_name}}</td>
+
+                          <td>{{test_detail.test.test_title}}</td>
+
+                          <td>{{test_detail.start_time}}</td>
+                          <td>{{test_detail.end_time}}</td>
+                          <td>{{test_detail.test.total_question}}</td>
+                          <td>{{test_detail.question_attempted}}</td>
+                          <td>{{test_detail.number_of_correct_answers}}</td>
+                          <td>
+                            <a href="#" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">
+                              Show Result</a></td>
+                    </tr>
+            {% endfor %}
+
+
+      </tbody>
+    </table>
+</div> 
+{% endblock content %}
