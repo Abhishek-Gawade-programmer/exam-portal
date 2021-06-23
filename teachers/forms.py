@@ -1,8 +1,7 @@
 from django import forms
 from students.models import *
 from django.utils import timezone
-
-
+from students.models import *
 
 class TestCreateFrom(forms.ModelForm):
     class Meta:
@@ -11,16 +10,11 @@ class TestCreateFrom(forms.ModelForm):
         exclude=('teacher','subject')
 
         widgets = {
+               'exam_start_time': forms.DateTimeInput(attrs={"type":"datetime" },),
+
+               'exam_end_time': forms.DateTimeInput(attrs={"type":"datetime-" },)
 
         }
-
-    def clean_make_active(self):
-        make_active = self.cleaned_data['make_active']
-        exam_start_time = self.cleaned_data['exam_start_time']
-        now=timezone.now()
-        if timezone.now() > exam_start_time:
-            raise forms.ValidationError("you can't change the active as exam is already start")
-        return make_active
 
 
 

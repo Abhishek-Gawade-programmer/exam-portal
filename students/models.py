@@ -24,7 +24,9 @@ class Subject(models.Model):
     hod=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     subject_name=models.CharField(max_length=300,unique=True,help_text = "Enter Subject Name <b>Do Not Duplicate </b>",)
     subject_code=models.CharField(max_length=10,unique=True,help_text = "Enter Subject Code <b>Given by SPPU</b>",)
-    teachers=models.ManyToManyField(User,related_name='subject_teachers',help_text = "Use <b>control + arrow</b> click to select multiple teachers",verbose_name='Select Teachers Want To Include')
+    teachers=models.ManyToManyField(User,related_name='subject_teachers',
+                            help_text = "Use <b>control + arrow</b> click to select multiple teachers",
+                            verbose_name='Select Teachers Want To Include')
     created =models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
@@ -39,8 +41,8 @@ class Subject(models.Model):
 class Test(models.Model):
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     test_title =models.CharField(max_length=300,help_text = "Title For Your test <b>Not Subject Name</b>")
-    exam_start_time=models.DateTimeField()
-    exam_end_time=models.DateTimeField()
+    exam_start_time=models.DateTimeField(help_text = " <em> YYYY-MM-DD HH-MM-SS (in 24hrs)</em>.")
+    exam_end_time=models.DateTimeField(help_text = " <em> YYYY-MM-DD HH-MM-SS (in 24hrs)</em>.")
 
     duration=models.TimeField(default='01:00:00',help_text = "Please use the following format: <em>HH-MM-SS</em>.")
     make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")

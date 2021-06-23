@@ -122,7 +122,6 @@ def test_detail_view(request,pk):
 @allow_to_teacher
 @login_required
 def create_new_question(request,test_id,add_another=False):
-	print(add_another,'555555555555555')
 	test=Test.objects.get(id=test_id)
 	questioncreatefrom = QuestionCreateFrom()
 	if request.method == 'POST':
@@ -154,7 +153,7 @@ def subject_update_view(request, pk):
     	edit_subject_update_form=subject_update_form.save(commit=False)
     	edit_subject_update_form.hod=request.user
     	edit_subject_update_form.save()
-    	messages.success(request, f"{edit_subject_update_form.subject_name} has been Updated successfully !!")
+    	messages.info(request, f"{edit_subject_update_form.subject_name} has been Updated successfully !!")
     	return redirect("my_subject")
 
  
@@ -170,14 +169,32 @@ def test_update_view(request, pk):
     test_object = get_object_or_404(Test, id = pk)
  
     test_update_form = TestCreateFrom(request.POST or None, instance = test_object)
-
+    test_active_status=test_object.make_active
+    test_start_time=test_object.exam_start_time
+    test_end_time=test_object.exam_end_time
     if test_update_form.is_valid():
     	edit_test_update_form=test_update_form.save(commit=False)
+
+    	if(test_active_status != edit_test_update_form.make_active) and (
+    		timezone.now() > test_object.exam_start_time):
+    		messages.error(request, f"You Can't change the active status of exam")
+    		return redirect("test_update",pk=test_object.subject.id)
+
+    	elif  (edit_test_update_form.exam_end_time < edit_test_update_form.exam_start_time):
+    		messages.error(request, f"make sure dates times of start exam and end exam are correct")
+    		return redirect("test_update",pk=test_object.subject.id)
+
+    	elif  (edit_test_update_form.make_active) and (test_start_time!=edit_test_update_form.exam_start_time):
+    		messages.error(request, f"you cant chages time as active is on")
+    		return redirect("test_update",pk=test_object.subject.id)
+
+
+
     	edit_test_update_form.subject=test_object.subject
     	edit_test_update_form.teacher=request.user
     	edit_test_update_form.save()
     	messages.success(request, f"{test_object.test_title} has been Updated successfully !!")
-    	return redirect("subject_detail",pk=test_object.subject.id)
+    	return redirect("test_detail",pk=test_object.id)
 
  
     return render(request, "teachers/test_update_form.html", {
