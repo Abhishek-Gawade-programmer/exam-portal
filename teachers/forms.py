@@ -51,3 +51,13 @@ class StudentVerificationFrom(forms.ModelForm):
             'student_subjects': forms.CheckboxSelectMultiple(),
 
         }
+
+class TeacherVerificationFrom(forms.ModelForm):
+    class Meta:
+        model=Teacher
+        exclude=('user','verify')
+
+        widgets = {
+            'teacher_subjects': forms.CheckboxSelectMultiple(),
+
+        }

@@ -1,19 +1,9 @@
 {% extends 'teachers/teachers_base.html' %}
 {% load static %}
-
 {% block content %}
-<h2 class="h1 fw-bold text-center">
-      {% if user.is_hod %}
-          All Collage Students
-      {% elif user.is_teacher %}
-          MY Class Students
-
-      {% endif %}
-  
-
-</h2>
+{% load crispy_forms_tags %}
+<h2 class="h1 fw-bold text-center">All Teachers</h2>
 <hr>
-
 
 
 
@@ -21,51 +11,51 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Roll No</th>
+          <th scope="col">Class Teacher Of</th>
           <th scope="col">Full Name</th>
-          <th scope="col">Student subjects</th>
+          <th scope="col">Teacher subjects</th>
           <th scope="col">Phone number</th>
           <th scope="col">Email</th>
           <th scope="col">Verification Status</th>
         </tr>
       </thead>
       <tbody>
-            {% for student in  my_students%}
+            {% for teacher in  all_teacher %}
                     <tr>
                           <th scope="row">
-                            <a href="{% url 'student_all_test_detail' student.pk %}">
-                              <button type="button" class="btn btn-dark btn-sm">{{student.college_rollno}}</button>
+                            <a href="">
+                              <button type="button" class="btn btn-dark btn-sm">{{teacher.class_teacher_roll}}</button>
                             </a>
                             
                           </th>
 
-                          <td>{{student.user.get_full_name}}</td>
+                          <td>{{teacher.user.get_full_name}}</td>
 
                           <td>
-                            {% for subject in  student.student_subjects.all %}
+                            {% for subject in  teacher.teacher_subjects.all %}
                             <span class="badge bg-primary">{{subject.subject_name}}</span>
                             {% endfor %}
 
                           </td>
-                          <td>{{student.phone_number}}</td>
-                          <td>{{student.user.email}}</td>
+                          <td>{{teacher.phone_number}}</td>
+                          <td>{{teacher.user.email}}</td>
 
                           <td>
-                            {% if student.verify %}
-                            <a href="{% url 'verify_student' student.pk %}">
-                              <button type="button" class="btn btn-success btn-sm px-3 mt-2" data-mdb-toggle="tooltip" title="Verified Student">
+                            {% if teacher.verify %}
+                            <a href="{% url 'verify_teacher' teacher.pk %}">
+                              <button type="button" class="btn btn-success btn-sm px-3 mt-2" data-mdb-toggle="tooltip" title="Verified Teacher">
                                 <i class="fas fa-check"></i>
                               </button></a>
                             {% else %}
-                              <a href="{% url 'verify_student' student.pk %}">
-                                   <button type="button" class="btn btn-danger btn-sm px-3  mt-2" data-mdb-toggle="tooltip" title="Click Here To verify this student">
+                              <a href="{% url 'verify_teacher' teacher.pk %}">
+                                   <button type="button" class="btn btn-danger btn-sm px-3  mt-2" data-mdb-toggle="tooltip" title="Click Here To verify this Teacher">
                                     <i class="fas fa-times"></i>
                                   </button>
                               </a>                         
 
 
                             {% endif %}
-                            <a href="{% url 'student_update' student.pk %}">
+                            <a href="{% url 'teacher_update' teacher.pk %}">
                              <button type="button" class="btn btn-secondary btn-sm px-3 mt-2">
                               <i class="fas fa-pencil-alt"></i>
                             </button></a>
@@ -77,4 +67,7 @@
       </tbody>
     </table>
 </div> 
-{% endblock content %}
+
+
+
+ {% endblock content %}

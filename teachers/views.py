@@ -7,7 +7,9 @@ from django.utils import timezone
 import json
 from django.views.generic import ListView,DetailView,View,CreateView,UpdateView
 
-from .forms import TestCreateFrom,SubjectCreateFrom,QuestionCreateFrom,StudentVerificationFrom
+from .forms import (TestCreateFrom,SubjectCreateFrom,
+						QuestionCreateFrom,StudentVerificationFrom,
+						TeacherVerificationFrom)
 from django.contrib import messages
 
 from django.contrib.auth import login
@@ -238,8 +240,13 @@ def question_update_view(request, pk):
 @allow_to_teacher_hod
 @login_required
 def show_all_student(request):
-	current_teacher=Teacher.objects.get(user=request.user)
-	my_students=Student.objects.filter(college_rollno__icontains=current_teacher.class_teacher_roll)
+	if request.user.is_teacher :
+		current_teacher=Teacher.objects.get(user=request.user)
+		my_students=Student.objects.filter(college_rollno__icontains=current_teacher.class_teacher_roll)
+	elif request.user.is_hod:
+		current_teacher=Teacher.objects.get(user=request.user)
+		my_students=Student.objects.all()
+
 	return render(request, "teachers/my_students.html", {
     			'my_students':my_students})
 
@@ -325,9 +332,49 @@ def student_exam_result(request, test_id,student_id):
     return render(request, "teachers/test_result_of_student.html", {'all_student_questions':all_student_questions_with_sr,'score':score})
 
 
+@allow_to_hod
+@login_required
+def all_teacher_details(request):
+    all_teacher=Teacher.objects.all()
+    return render(request,'teachers/all_teacher_list.html',
+    			{'all_teacher':all_teacher})
 
 
+@allow_to_hod
+@login_required
+def verify_the_teacher(request,pk):
+
+	current_teacher=get_object_or_404(Teacher, pk = pk)
+	if current_teacher.verify:
+		current_teacher.verify=False
+		messages.error(request, f"{current_teacher.user.get_full_name()} of :{current_teacher.class_teacher_roll} has been Unverified successfully !!")
+	else:
+		current_teacher.verify=True
+		messages.success(request, f" {current_teacher.user.get_full_name()}:of {current_teacher.class_teacher_roll} has been Verified successfully !!")
+	current_teacher.save()
+	#email to student that verification is done
+	return redirect("all_teacher_details")
 
 
+@allow_to_hod
+@login_required
+def teacher_update_view(request, pk):
+ 
+    current_teacher=get_object_or_404(Teacher, pk = pk)
+ 
+    teacher_verfiy_form = TeacherVerificationFrom(request.POST or None, instance = current_teacher)
 
+    if teacher_verfiy_form.is_valid():
+    	edit_teacher_verfiy_form=teacher_verfiy_form.save(commit=False)
+    	current_teacher.teacher_subjects.clear()
+    	for _ in teacher_verfiy_form.cleaned_data['teacher_subjects']:
+    		current_teacher.teacher_subjects.add(_)
+    	current_teacher.save()
+    	edit_teacher_verfiy_form.save()
+    	messages.success(request, f" {current_teacher.user.get_full_name()}:of {current_teacher.class_teacher_roll} has been Updated  successfully !!")
+    	return redirect("all_teacher_details")
+
+ 
+    return render(request, "teachers/teacher_update_form.html", {
+    			'teacher_verfiy_form':teacher_verfiy_form,'current_teacher':current_teacher})
 
