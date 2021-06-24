@@ -29,22 +29,18 @@ def allow_to_hod(view_func):
 
 
 
-def allow_to_teacher(view_func):
+def allow_to_teacher_hod(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.is_teacher: 
+            if request.user.is_teacher or request.user.is_hod:
                 return view_func(request,*args, **kwargs)
-            else:
-            	if request.user.is_hod:
-            		pass
-            	return HttpResponse('not a taecher')
         else:
          	return redirect("login")
 
     return wrapper_func
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def create_new_test(request,pk):
 	subject=Subject.objects.get(pk=pk)
@@ -76,15 +72,20 @@ def create_new_subject(request):
 		if subjectcreatefrom.is_valid():
 			edit_subjectcreatefrom=subjectcreatefrom.save(commit=False)
 			edit_subjectcreatefrom.hod=request.user
+			# edit_subjectcreatefrom.teachers.clear()
 			edit_subjectcreatefrom.save()
+			subject_object = get_object_or_404(Subject, pk = edit_subjectcreatefrom.pk)
+			for _ in subjectcreatefrom.cleaned_data['teachers']:
+				subject_object.teachers.add(_)
+			subject_object.save()
 			messages.success(request, f"New Subject :: {edit_subjectcreatefrom.subject_name} has been created successfully")
-			return redirect("my_subject")
+			return redirect("all_subject")
 
 	return render(request,'teachers/create_new_subject.html',{'subjectcreatefrom':SubjectCreateFrom})
 
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def subject_list_view(request):
     all_subject=Subject.objects.filter(teachers__in=[request.user,])
@@ -103,7 +104,7 @@ def for_hod_subject_list_view(request):
     return render(request,'teachers/all_subject_list.html',
     			{'all_subject':all_subject})
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def subject_detail_view(request,pk):
     subject=Subject.objects.get(pk=pk)
@@ -111,15 +112,39 @@ def subject_detail_view(request,pk):
     return render(request,'teachers/subject_detail.html',
     			{'subject':subject,'test_in_subject':test_in_subject})
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def test_detail_view(request,pk):
     test=Test.objects.get(pk=pk)
     ques_in_test=Question.objects.filter(test=test)
     return render(request,'teachers/test_detail.html',
     			{'test':test,'ques_in_test':ques_in_test})
+@allow_to_hod
+@login_required
+def subject_update_view(request, pk):
+ 
+    subject_object = get_object_or_404(Subject, pk = pk)
+ 
+    subject_update_form = SubjectCreateFrom(request.POST or None, 
+    	instance = subject_object)
 
-@allow_to_teacher
+    if subject_update_form.is_valid():
+    	edit_subject_update_form=subject_update_form.save(commit=False)
+    	edit_subject_update_form.hod=request.user
+    	edit_subject_update_form.teachers.clear()
+    	for _ in subject_update_form.cleaned_data['teachers']:
+    		subject_object.teachers.add(_)
+    	subject_object.save()
+    	edit_subject_update_form.save()
+    	messages.info(request, f"{edit_subject_update_form.subject_name} has been Updated successfully !!")
+    	return redirect("all_subject")
+
+ 
+    return render(request, "teachers/subject_update_form.html", {
+    			'subject_update_form':subject_update_form,
+    			'subject':subject_object})
+
+@allow_to_teacher_hod
 @login_required
 def create_new_question(request,test_id,add_another=False):
 	test=Test.objects.get(id=test_id)
@@ -139,30 +164,9 @@ def create_new_question(request,test_id,add_another=False):
 
 	return render(request,'teachers/create_new_question.html',{'questioncreatefrom':questioncreatefrom,'test':test})
 
-@allow_to_teacher
-@login_required
-# @allow_to_hod
-def subject_update_view(request, pk):
- 
-    subject_object = get_object_or_404(Subject, id = pk)
- 
-    subject_update_form = SubjectCreateFrom(request.POST or None, 
-    	instance = subject_object)
-
-    if subject_update_form.is_valid():
-    	edit_subject_update_form=subject_update_form.save(commit=False)
-    	edit_subject_update_form.hod=request.user
-    	edit_subject_update_form.save()
-    	messages.info(request, f"{edit_subject_update_form.subject_name} has been Updated successfully !!")
-    	return redirect("my_subject")
-
- 
-    return render(request, "teachers/subject_update_form.html", {
-    			'subject_update_form':subject_update_form,
-    			'subject':subject_object})
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def test_update_view(request, pk):
  
@@ -175,9 +179,13 @@ def test_update_view(request, pk):
     if test_update_form.is_valid():
     	edit_test_update_form=test_update_form.save(commit=False)
 
+
+
     	if(test_active_status != edit_test_update_form.make_active) and (
+
     		timezone.now() > test_object.exam_start_time):
-    		messages.error(request, f"You Can't change the active status of exam")
+
+    		messages.error(request, f"You Can't change the active status of exam as time is over")
     		return redirect("test_update",pk=test_object.subject.id)
 
     	elif  (edit_test_update_form.exam_end_time < edit_test_update_form.exam_start_time):
@@ -185,7 +193,11 @@ def test_update_view(request, pk):
     		return redirect("test_update",pk=test_object.subject.id)
 
     	elif  (edit_test_update_form.make_active) and (test_start_time!=edit_test_update_form.exam_start_time):
-    		messages.error(request, f"you cant chages time as active is on")
+    		messages.error(request, f"you cant changes time as active is on")
+    		return redirect("test_update",pk=test_object.subject.id)
+
+    	elif  (edit_test_update_form.make_active) and (test_object.get_total_questions()<edit_test_update_form.total_question):
+    		messages.error(request, f"Yon can't MAKE ACTIVE as number of questions not SATISFIED")
     		return redirect("test_update",pk=test_object.subject.id)
 
 
@@ -200,7 +212,7 @@ def test_update_view(request, pk):
     return render(request, "teachers/test_update_form.html", {
     			'test_update_form':test_update_form,'test':test_object})
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def question_update_view(request, pk):
  
@@ -223,7 +235,7 @@ def question_update_view(request, pk):
 
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def show_all_student(request):
 	current_teacher=Teacher.objects.get(user=request.user)
@@ -231,7 +243,7 @@ def show_all_student(request):
 	return render(request, "teachers/my_students.html", {
     			'my_students':my_students})
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def verify_the_student(request,pk):
 
@@ -247,7 +259,7 @@ def verify_the_student(request,pk):
 	return redirect("my_students")
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def student_update_view(request, pk):
  
@@ -272,7 +284,7 @@ def student_update_view(request, pk):
     			'student_verfiy_form':student_verfiy_form,'current_student':current_student})
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def delete_the_question(request, pk):
     question_object = get_object_or_404(Question, id = pk)
@@ -283,7 +295,7 @@ def delete_the_question(request, pk):
     return redirect("test_detail",pk=test.id)
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def student_all_test_detail(request, pk):
     current_student = get_object_or_404(Student, pk = pk)
@@ -293,7 +305,7 @@ def student_all_test_detail(request, pk):
     			'current_student':current_student})
 
 
-@allow_to_teacher
+@allow_to_teacher_hod
 @login_required
 def student_exam_result(request, test_id,student_id):
 
@@ -311,3 +323,11 @@ def student_exam_result(request, test_id,student_id):
     						))
     score=f'{student_questions.number_of_correct_answers()}/{current_test.total_question}'
     return render(request, "teachers/test_result_of_student.html", {'all_student_questions':all_student_questions_with_sr,'score':score})
+
+
+
+
+
+
+
+

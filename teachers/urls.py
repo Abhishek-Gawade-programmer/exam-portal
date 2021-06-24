@@ -26,7 +26,7 @@ urlpatterns = [
 
         path('all-subject/',for_hod_subject_list_view,name ='all_subject'),
         path('subject-detail/<int:pk>/',subject_detail_view,name ='subject_detail'),
-        path('subject-update/<int:pk>/',student_update_view,name ='subject_update'),
+        path('student-update/<int:pk>/',student_update_view,name ='subject_update'),
 
          path('my-students/',show_all_student,name ='my_students'),
          

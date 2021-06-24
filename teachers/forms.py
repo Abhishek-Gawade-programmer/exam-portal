@@ -25,6 +25,7 @@ class SubjectCreateFrom(forms.ModelForm):
         exclude=('hod',)
 
         widgets = {
+            'teachers': forms.CheckboxSelectMultiple(),
 
 
         }
@@ -37,6 +38,7 @@ class QuestionCreateFrom(forms.ModelForm):
 
         widgets = {
 
+
         }
 
 
@@ -46,8 +48,6 @@ class StudentVerificationFrom(forms.ModelForm):
         exclude=('user','verify')
 
         widgets = {
-            'student_subjects': forms.CheckboxSelectMultiple(
-   
-        ),
+            'student_subjects': forms.CheckboxSelectMultiple(),
 
         }

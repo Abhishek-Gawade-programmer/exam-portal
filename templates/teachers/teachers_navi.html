@@ -1,7 +1,14 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Teacher Dashboard</a>
+    <a class="navbar-brand" href="#">
+      {% if user.is_hod %}
+          HOD
+      {% elif user.is_teacher %}
+          Teacher
+
+      {% endif %}
+      Dashboard</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -23,17 +30,20 @@
 
           <li class="nav-item">
             <a class="nav-link" href="{% url 'subject_create' %}">Create Subject</a>
+          </li> 
+           <li class="nav-item">
+            <a class="nav-link" href="{% url 'subject_create' %}">All Teachers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'subject_create' %}">All Students</a>
           </li>
 
-           <li class="nav-item">
-            <a class="nav-link" href="{% url 'subject_create' %}">All Teacher</a>
-          </li>
         {% elif user.is_teacher %}
                 <li class="nav-item">
           <a class="nav-link " aria-current="page" href="{% url 'my_subject' %}">My Subjects</a>
         </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_students' %}">All Students</a>
+            <a class="nav-link" href="{% url 'my_students' %}">My Class Students</a>
           </li)
           
 

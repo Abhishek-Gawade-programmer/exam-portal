@@ -101,7 +101,7 @@ def student_subject_detail(request,pk):
     current_student=Student.objects.get(user=request.user)
     if current_student.verify:
         subject=Subject.objects.get(pk=pk)
-        test_in_subject=Test.objects.filter(subject=subject)
+        test_in_subject=Test.objects.filter(subject=subject,make_active=True)
 
         return render(request,'students/student_subject_deatils.html',{
             'subject':subject,
