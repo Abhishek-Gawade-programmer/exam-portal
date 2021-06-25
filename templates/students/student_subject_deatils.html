@@ -4,6 +4,22 @@
 {% load templates_tags %}
 
 {% block content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <h4 class="h3 fw-bold">All Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> 
 </h4>
 <hr>
@@ -14,6 +30,28 @@
         background-color: black;
         border-color: black;
     }
+        #video {
+        border: 1px solid black;
+        width: 320px;
+        height: 240px;
+    }
+
+
+    .camera {
+        width: 340px;
+        display: inline-block;
+    }
+
+    .output {
+        width: 340px;
+        display: inline-block;
+    }
+    canvas{
+            border: 1px solid black;
+        width: 320px;
+        height: 240px;
+
+    }
 </style>
 <div class="row">
 {% for test in test_in_subject %}
@@ -22,11 +60,13 @@
                   <li class="list-group-item active" aria-current="true">
                   {{test.test_title}}
                    {% if   request.user|eligible_student_test:test.id  %}
-                      <a href="{% url 'quiz-list' test.pk %}">
-                            <span class="float-right btn btn-danger  btn-sm btn-rounded">
-                               <i class="fas fa-play"></i> Start Test
-                            </span>
-                        </a>
+                    {#   <a href="{% url 'quiz-list' test.pk %}"> #}
+
+
+                        <button type="button" id='start_test_button' test-id='{{test.pk}}' class="float-right  btn btn-primary btn-sm btn-rounded" data-toggle="modal" data-target="#exampleModalCenter">
+                                <i class="fas fa-play"></i> Start Test
+                                </button>
+                        {# </a> #}
                 {% endif %}
                                   
 
@@ -41,6 +81,7 @@
                     <span class="fw-bold float-left">Total Questions </span>
                     <span class="fw-bold float-right">{{test.total_question}}</span>
                   </li>
+                  
                 <li class="list-group-item">
                     <span class="fw-bold float-left">Maximum  marks </span>
                     <span class="fw-bold float-right">{{test.max_mark}}</span>
@@ -48,6 +89,16 @@
                 <li class="list-group-item">
                     <span class="fw-bold float-left">Passing marks </span>
                     <span class="fw-bold float-right">{{test.passing_marks}}</span>
+                  </li>
+
+                 <li class="list-group-item">
+                    <span class="fw-bold float-left">The Test Will Start at</span>
+                    <span class="fw-bold float-right">{{test.exam_start_time}}</span>
+                  </li>
+
+                <li class="list-group-item">
+                    <span class="fw-bold float-left">The Test Will End at</span>
+                    <span class="fw-bold float-right">{{test.exam_end_time}}</span>
                   </li>
 
         
@@ -61,9 +112,43 @@
     </div>
 
           
+<!-- Button trigger modal -->
 
 
+<!-- Modal -->
+<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Student Verification</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+        <center>
+            <div class="contentarea">
+                <div class="camera">
+                    <video id="video" >Video stream not available.</video>
+                </div>
+                <div><button id="startbutton" class="btn btn-primary btn-lg mb-5">Take photo</button></div>
+                <canvas id="canvas">
 
+                <div class="output">
+                    <img id="photo" alt="The screen capture will appear in this box.">
+                </div></canvas>
+            </div>
+        </center>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" id='proceed_to_exam' class="btn btn-success" disabled >Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{% static 'js/video_capuring.js' %}"></script>
 
 
  {% endblock content %}

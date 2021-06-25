@@ -64,14 +64,18 @@ class Test(models.Model):
 
     def allow_student_for_exam(self,student):
         time=timezone.now()
-
-        if UserQuestionList.objects.filter(student=student,test=self).exists():
-            test_for_student=UserQuestionList.objects.get(student=student,test=self)
-            if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
-                return True
-            else:
-                return False
-        return True
+        if (time>self.exam_start_time) and (time<self.exam_end_time):
+            print('sdfgs')
+            if UserQuestionList.objects.filter(student=student,test=self).exists():
+                test_for_student=UserQuestionList.objects.get(student=student,test=self)
+                if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
+                    return True
+                else:
+                    return False
+            return True
+        else:
+            print('fffffffff')
+            return False
 
     def get_total_questions(self):
         return Question.objects.filter(test=self).count()
@@ -107,7 +111,7 @@ class StudentAnswer(models.Model):
     bookmark=models.BooleanField(default=False)
     student_option = models.CharField(choices=CORRECT_ANSWER,verbose_name="Student's Option",max_length=1,default='',blank=True,null=True)
     def __str__(self):
-        return  str(self.student_option)
+        return  f'{self.question.question_title}--'+str(self.student_option)
 
     
 
@@ -123,7 +127,19 @@ class UserQuestionList(models.Model):
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     start_time=models.DateTimeField()
     end_time=models.DateTimeField(null=True)
+    login_image=models.ImageField(blank=True)
     test_question=models.TextField(max_length=2000)
+
+    def __str__(self):
+        return f'{self.student}--{self.test}'
+
+
+
+
+
+
+
+
 
     def question_attempted(self):
         question_attempted_count=StudentAnswer.objects.filter(student=self.student,test=self.test

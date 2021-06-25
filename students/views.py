@@ -21,6 +21,20 @@ from django.contrib.auth import logout
 
 from django.contrib import messages
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class StudentSignUpView(CreateView):
     model = User
     form_class = StudentSignUpForm
@@ -66,7 +80,6 @@ def redirect_after_login(request):
         return redirect("all_subject") 
 
 
-
 def allow_to_students(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
@@ -77,6 +90,31 @@ def allow_to_students(view_func):
                 return HttpResponse('not a student')
 
     return wrapper_func
+
+@login_required
+@allow_to_students
+def verification_of_student(request):
+    if request.method=='POST' :
+        print(request.POST)
+        # question=get_object_or_404(Question,id=request.POST.get('pk'))
+        # student_answer=StudentAnswer.objects.get(question=question,test=current_test,student=request.user)
+        # student_answer.student_option=request.POST.get('option')
+        # student_answer.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
