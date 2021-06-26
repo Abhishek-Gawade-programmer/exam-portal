@@ -31,6 +31,7 @@ $j(window).on("load", function () {
                 csrfmiddlewaretoken: csrftoken,
 
                 page_number: question_number,
+                
             },
 
             success: function (response) {

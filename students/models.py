@@ -53,7 +53,8 @@ class Test(models.Model):
     make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")
     total_question=models.IntegerField(default=0,help_text = "Total Questions You Created")
     max_mark=models.IntegerField(default=0,help_text = "Max marks of this Test")
-    passing_marks=models.IntegerField(default=0,help_text = "Keep Zero for <b>No Passing Criteria </b> and Less than <b>Max</b> marks")
+    passing_marks=models.IntegerField(default=0,
+        help_text = "Keep Zero for <b>No Passing Criteria </b> and Less than <b>Max</b> marks")
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
     created =models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
@@ -88,7 +89,8 @@ class Question(models.Model):
                     db_index=True,)
 
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
-    question_title =models.TextField(max_length=3000,unique=True,help_text='make sure question should me <b>Clear and Not Duplicate</b>')
+    question_title =models.TextField(max_length=3000,unique=True,
+                help_text='make sure question should me <b>Clear and Not Duplicate</b>')
     option_1=models.CharField(max_length=200,help_text='Option 1 should not to be repeat')
     option_2=models.CharField(max_length=200,help_text='Option 2 should not to be repeat')
     option_3=models.CharField(max_length=200,help_text='Option 3 should not to be repeat')
@@ -109,7 +111,8 @@ class StudentAnswer(models.Model):
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     question_seen=models.BooleanField(default=False)
     bookmark=models.BooleanField(default=False)
-    student_option = models.CharField(choices=CORRECT_ANSWER,verbose_name="Student's Option",max_length=1,default='',blank=True,null=True)
+    student_option = models.CharField(choices=CORRECT_ANSWER,verbose_name="Student's Option",
+                max_length=1,default='',blank=True,null=True)
     def __str__(self):
         return  f'{self.question.question_title}--'+str(self.student_option)
 
@@ -127,17 +130,10 @@ class UserQuestionList(models.Model):
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     start_time=models.DateTimeField()
     end_time=models.DateTimeField(null=True)
-    login_image=models.ImageField(blank=True)
     test_question=models.TextField(max_length=2000)
 
     def __str__(self):
         return f'{self.student}--{self.test}'
-
-
-
-
-
-
 
 
 
@@ -156,11 +152,13 @@ class UserQuestionList(models.Model):
             # print(student_answer.question.student_option)
         return correct_answer
 
-        
 
-
-
-
+class StudentExamCapture(models.Model):
+    student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
+    test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
+    student_image=models.ImageField(blank=True)
+    created =models.DateTimeField(auto_now_add=True)
+   
 
 
 
@@ -182,7 +180,8 @@ class Teacher(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_subjects = models.ManyToManyField(Subject,related_name='student_subjects')
-    college_rollno =models.CharField(max_length=10,unique=True,error_messages={'unique':"This rollno has already been registered."})
+    college_rollno =models.CharField(max_length=10,unique=True,error_messages={
+                'unique':"This rollno has already been registered."})
     phone_number=models.CharField(max_length=20)
     verify=models.BooleanField(default=False)
 

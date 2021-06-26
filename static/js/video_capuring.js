@@ -1,11 +1,17 @@
 /* JS comes here */
-var start_test_button=document.getElementById('start_test_button');
-start_test_button.addEventListener("click", (event) => {
-		console.log(start_test_button.getAttribute('test-id'))
-    });
 var proceed_to_exam=document.getElementById('proceed_to_exam');
 
+all_start_exam_buttons=document.querySelectorAll('.start_test');
 
+window.current_test = 0;
+window.data = '';
+all_start_exam_buttons.forEach(item => item.addEventListener('click',
+    (event)=>{
+        window.current_test= item.getAttribute('test-id');
+    }
+
+    ));
+ var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
 
 (function() {
@@ -83,7 +89,7 @@ var proceed_to_exam=document.getElementById('proceed_to_exam');
             context.drawImage(video, 0, 0, width, height);
 
             var data = canvas.toDataURL('image/png');
-            console.log('>>>>>>>>>>>>>>ze',data)
+            window.data = data;
             photo.setAttribute('src', data);
             
             proceed_to_exam.removeAttribute('disabled')
@@ -97,23 +103,30 @@ var proceed_to_exam=document.getElementById('proceed_to_exam');
 
 
     proceed_to_exam.addEventListener("click", (event) => {
-        console.log("proceed cl8ick");
+        // console.log("proceed cl8ick",window.current_test,window.data);
 
-        // submit_exam_fuction();
+        vefication_of_student();
 
-        // function submit_exam_fuction() {
-        //     $j.ajax({
-        //         type: "POST",
+        function vefication_of_student() {
+            $j.ajax({
+                type: "POST",
 
-        //         url: "/submit-exam",
+                url: "/verification-student/",
+                 data: {
+                    csrfmiddlewaretoken: csrftoken,
 
-        //         success: function (response) {
-        //             window.location.replace(
-        //                 "http://localhost:8000/submit-exam/"
-        //             );
-        //         },
-        //     });
-        // }
+                    current_test: window.current_test,
+                    data_img : window.data
+                },
+
+                success: function (response) {
+                    console.log('gond job')
+                    window.location.replace(
+                        "http://localhost:8000/test/"+window.current_test+'/'
+                    );
+                },
+            });
+        }
         
     });
 

@@ -11,15 +11,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 <h4 class="h3 fw-bold">All Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> 
 </h4>
 <hr>
@@ -63,7 +54,7 @@
                     {#   <a href="{% url 'quiz-list' test.pk %}"> #}
 
 
-                        <button type="button" id='start_test_button' test-id='{{test.pk}}' class="float-right  btn btn-primary btn-sm btn-rounded" data-toggle="modal" data-target="#exampleModalCenter">
+                        <button type="button" id='start_test_button' test-id='{{test.pk}}' class="float-right  btn btn-primary btn-sm btn-rounded start_test" data-toggle="modal" data-target="#exampleModalCenter">
                                 <i class="fas fa-play"></i> Start Test
                                 </button>
                         {# </a> #}
@@ -128,6 +119,7 @@
       <div class="modal-body" >
         <center>
             <div class="contentarea">
+                {% csrf_token %}
                 <div class="camera">
                     <video id="video" >Video stream not available.</video>
                 </div>

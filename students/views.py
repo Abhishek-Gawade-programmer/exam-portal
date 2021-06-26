@@ -6,7 +6,7 @@ from django.middleware.csrf import get_token
 from django.utils import timezone
 import json
 from django.http import HttpResponseRedirect
-
+import base64
 #MULTIPLE AUTHENTICATION 
 from django.contrib.auth import login
 from django.shortcuts import redirect
@@ -93,33 +93,6 @@ def allow_to_students(view_func):
 
 @login_required
 @allow_to_students
-def verification_of_student(request):
-    if request.method=='POST' :
-        print(request.POST)
-        # question=get_object_or_404(Question,id=request.POST.get('pk'))
-        # student_answer=StudentAnswer.objects.get(question=question,test=current_test,student=request.user)
-        # student_answer.student_option=request.POST.get('option')
-        # student_answer.save()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@login_required
-@allow_to_students
 def student_dashboard(request):
     current_student=Student.objects.get(user=request.user)
     if current_student.verify:
@@ -150,6 +123,32 @@ def student_subject_detail(request,pk):
     return redirect("login") 
 
 
+@login_required
+@allow_to_students
+def verification_of_student(request):
+    if request.method=='POST' :
+        current_test=Test.objects.get(id=int(request.POST.get('current_test')))
+        from django.core.files.base import ContentFile
+        data_img=request.POST.get('data_img')
+        format, imgstr = data_img.split(';base64,') 
+        ext = format.split('/')[-1] 
+        data = ContentFile(base64.b64decode(imgstr),name=f'{request.user.get_full_name()}.' + ext )
+
+        student_data=StudentExamCapture.objects.create(student=request.user,test=current_test,student_image=data)
+        student_data.save()
+        return JsonResponse({'success':'true'},safe=False)
+        # return redirect("quiz-list",test_id=current_test.id)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,11 +157,13 @@ def student_subject_detail(request,pk):
 @allow_to_students
 def initial_setup(request,test_id):
     global current_test
+
+
     current_test=Test.objects.get(id=test_id)
     all_user_question=Question.objects.filter(test=current_test).order_by('?')[:current_test.total_question]
     #get the test
     check_test_given=UserQuestionList.objects.filter(test=current_test,student=request.user).exists()
-    print(check_test_given)
+    # print(check_test_given)
 
 
     if  not check_test_given:
@@ -187,6 +188,7 @@ def initial_setup(request,test_id):
         return render(request,'home.html')
     else:
         countiune_check_test_given=UserQuestionList.objects.get(test=current_test,student=request.user)
+
 
         if countiune_check_test_given.end_time and not(current_test.allow_student_for_exam(request.user)):
             return render(request,'403_not_allowed.html')
