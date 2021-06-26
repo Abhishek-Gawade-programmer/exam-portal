@@ -22,6 +22,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 
 
+from datetime import datetime, timedelta
 
 
 
@@ -182,18 +183,26 @@ def initial_setup(request,test_id):
 
             student_test_data=UserQuestionList.objects.create(test=current_test,
                             student=request.user,test_question=json.dumps(all_user_question_ids),
-                            start_time=timezone.now())
+                            start_time=timezone.now(),
+
+                            end_time=timezone.now()+timedelta(hours=current_test.duration.hour,
+                                                            minutes=current_test.duration.minute,
+                                                            seconds=current_test.duration.second
+                                                            ))
+
             student_test_data.save()
 
-        return render(request,'home.html')
+            context={'time_left':student_test_data.end_time}
+            return render(request,'home.html',context)
     else:
         countiune_check_test_given=UserQuestionList.objects.get(test=current_test,student=request.user)
 
 
-        if countiune_check_test_given.end_time and not(current_test.allow_student_for_exam(request.user)):
+        if countiune_check_test_given.submit_time and not(current_test.allow_student_for_exam(request.user)):
             return render(request,'403_not_allowed.html')
         else:
-            return render(request,'home.html')
+            context={'time_left':countiune_check_test_given.end_time}
+            return render(request,'home.html',context)
 @login_required
 @allow_to_students
 def save_question(request):
@@ -331,7 +340,7 @@ def submit_exam(request):
     question_id=json.loads(UserQuestionList.objects.get(student=request.user,test=current_test).test_question)[0]
     question=get_object_or_404(Question,id=question_id)
     x=UserQuestionList.objects.get(test=current_test,student=request.user)
-    x.end_time=timezone.now()
+    x.submit_time=timezone.now()
     x.save()
     tick_question=StudentAnswer.objects.filter(student=request.user,test=question.test).exclude(student_option='').count()
 

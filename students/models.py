@@ -69,7 +69,7 @@ class Test(models.Model):
             print('sdfgs')
             if UserQuestionList.objects.filter(student=student,test=self).exists():
                 test_for_student=UserQuestionList.objects.get(student=student,test=self)
-                if (not test_for_student.end_time) and (test_for_student.start_time  < time)  :
+                if (not test_for_student.submit_time) and (test_for_student.start_time  < time)  :
                     return True
                 else:
                     return False
@@ -129,6 +129,7 @@ class UserQuestionList(models.Model):
     student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     start_time=models.DateTimeField()
+    submit_time=models.DateTimeField(null=True,blank=True)
     end_time=models.DateTimeField(null=True)
     test_question=models.TextField(max_length=2000)
 
@@ -137,10 +138,19 @@ class UserQuestionList(models.Model):
 
 
 
+
     def question_attempted(self):
         question_attempted_count=StudentAnswer.objects.filter(student=self.student,test=self.test
                                     ).exclude(student_option=None).count()
         return question_attempted_count
+
+    def student_exam_time_left(self):
+        return self.end_time-timezone.now()
+
+
+
+
+
     def number_of_correct_answers(self):
         all_question_attempted=StudentAnswer.objects.filter(student=self.student,test=self.test
                                     ).exclude(student_option=None)

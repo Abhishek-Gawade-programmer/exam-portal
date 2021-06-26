@@ -3,9 +3,24 @@
 {% block content %}
 
 
+
+
+<div class="row">
+<section class="border p-4 text-center mb-4">
+      <div id="timer" class="float-right">
+        <!-- <span class="badge bg-primary">Primary</span> -->
+        <h4>
+        <span id="hours" class="badge bg-secondary mr-0">00 Hr</span>
+        <span id="minutes" class="badge bg-success mr-0">00 Min </span>
+        <span id="seconds" class="badge bg-danger mr-0">00 Sec</span>
+      </h4>
+      </div>
+    </section>
+
+</div>
 <div class="row">
 
-
+    
       <div class="col-12 col-md-12">
           <div id='question_frame' >
             <div class="card">
@@ -115,24 +130,69 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script type="text/javascript" src="{% static 'js/question_change.js' %}"></script>
+
+
+<script type="text/javascript">
+  
+// timmer in javascrpt
+
+  function makeTimer() {
+
+   var endTime=new Date({{ time_left|date:"U" }}* 1000);
+    endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+        if (hours=="00" && minutes=="00" && seconds=="00" ){
+          console.log('time over')       
+          $j.ajax({
+                type: "GET",
+
+                url:"/submit-exam/",
+
+                success: function (response) {
+                        window.location.replace(
+                        "http://localhost:8000/submit-exam/"
+                    );
+            
+                },
+            });
+        }
+
+        $j("#days").html(days + "<span>Days</span>");
+        $j("#hours").html(hours + "<span> Hr</span>");
+        $j("#minutes").html(minutes + "<span> Min</span>");
+        $j("#seconds").html(seconds + "<span> Sec</span>");
+    };
+
+setInterval(function() { makeTimer(); }, 1000);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

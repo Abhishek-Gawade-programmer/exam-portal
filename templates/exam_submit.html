@@ -1,36 +1,39 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<div class="container">
 <div class="row">
 
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Start Time</th>
-      <th scope="col">End Time</th>
-      <th scope="col">Subject</th>
-      <th scope="col">Test </th>
-      <th scope="col">No Question</th>
-      <th scope="col">No Question Attempted</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>{{exam_info.start_time}}</th>
-      <td>{{exam_info.end_time}}  </td>
-      <td>{{exam_info.test.subject.subject_name}}  </td>
-      <td> {{exam_info.test.test_title}}  </td>
-      <td> {{exam_info.test.total_question}}  </td>
-      <td> {{tick_question}}  </td>
-      
-    </tr>
+<div class="table-responsive">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Start Time</th>
+        <th scope="col">End Time</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Test </th>
+        <th scope="col">No Question</th>
+        <th scope="col">No Question Attempted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>{{exam_info.start_time}}</th>
+        <td>{{exam_info.end_time}}  </td>
+        <td>{{exam_info.test.subject.subject_name}}  </td>
+        <td> {{exam_info.test.test_title}}  </td>
+        <td> {{exam_info.test.total_question}}  </td>
+        <td> {{tick_question}}  </td>
+        
+      </tr>
 
 
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
  <a href="{% url 'student_dashboard' %}" class="btn btn-primary btn-lg btn-block">Go to Your Dashboard</a>
  </div>
-
+ </div>
 
 
  {% endblock content %}
