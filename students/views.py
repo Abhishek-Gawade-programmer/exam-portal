@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse, HttpResponse
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+
 
 from .models import *
 from django.middleware.csrf import get_token
@@ -7,6 +9,7 @@ from django.utils import timezone
 import json
 from django.http import HttpResponseRedirect
 import base64
+
 #MULTIPLE AUTHENTICATION 
 from django.contrib.auth import login
 from django.shortcuts import redirect
@@ -117,7 +120,8 @@ def student_subject_detail(request,pk):
 
         return render(request,'students/student_subject_deatils.html',{
             'subject':subject,
-            'test_in_subject':test_in_subject
+            'test_in_subject':test_in_subject,
+            'current_student':current_student
             })
     messages.error(request, f"Your account is not verify yet")
     logout(request) 
@@ -139,17 +143,6 @@ def verification_of_student(request):
         student_data.save()
         return JsonResponse({'success':'true'},safe=False)
         # return redirect("quiz-list",test_id=current_test.id)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -183,25 +176,28 @@ def initial_setup(request,test_id):
 
             student_test_data=UserQuestionList.objects.create(test=current_test,
                             student=request.user,test_question=json.dumps(all_user_question_ids),
-                            start_time=timezone.now(),
+                            start_time=timezone.now(),)
 
-                            end_time=timezone.now()+timedelta(hours=current_test.duration.hour,
-                                                            minutes=current_test.duration.minute,
-                                                            seconds=current_test.duration.second
-                                                            ))
-
+            
+            duration=timedelta(hours=current_test.duration.hour,
+                                 minutes=current_test.duration.minute,
+                                 seconds=current_test.duration.second )
+            if (timezone.now()+duration)>current_test.exam_end_time:
+                student_test_data.end_time=current_test.exam_end_time
+            else:
+                student_test_data.end_time=timezone.now()+duration
             student_test_data.save()
 
-            context={'time_left':student_test_data.end_time}
+
+            context={'time_left':student_test_data.end_time,'current_test':current_test}
             return render(request,'home.html',context)
     else:
         countiune_check_test_given=UserQuestionList.objects.get(test=current_test,student=request.user)
 
-
         if countiune_check_test_given.submit_time and not(current_test.allow_student_for_exam(request.user)):
             return render(request,'403_not_allowed.html')
         else:
-            context={'time_left':countiune_check_test_given.end_time}
+            context={'time_left':countiune_check_test_given.end_time,'current_test':current_test}
             return render(request,'home.html',context)
 @login_required
 @allow_to_students
@@ -345,6 +341,37 @@ def submit_exam(request):
     tick_question=StudentAnswer.objects.filter(student=request.user,test=question.test).exclude(student_option='').count()
 
     return render(request,'exam_submit.html',{'exam_info':x,'tick_question':tick_question})
+
+
+@allow_to_students
+@login_required
+def student_result(request, test_id,student_id):
+
+    current_student = get_object_or_404(Student, pk = student_id)
+    current_test= get_object_or_404(Test, pk = test_id)
+    try :
+        student_questions=UserQuestionList.objects.get(student=current_student.user,test=current_test)
+    except ObjectDoesNotExist:
+        messages.error(request, f"You Have not given exam yet !!")
+        return redirect("student_subject_detail",pk=current_test.subject.pk)
+
+    student_questions_with_sr=json.loads(student_questions.test_question)
+    all_student_questions_with_sr=[]  
+    for student_question in student_questions_with_sr:
+        question= get_object_or_404(Question, id = student_question)
+        all_student_questions_with_sr.append(
+                            StudentAnswer.objects.get(
+                            question=question,
+                            student=current_student.user,test=current_test
+                            ))
+    score=f'{student_questions.number_of_correct_answers()}/{current_test.total_question}'
+    result=True if student_questions.number_of_correct_answers()>current_test.passing_marks else False
+
+    return render(request, "students/student_result.html", {
+                            'all_student_questions':all_student_questions_with_sr,'score':score,
+                            'current_student':current_student,
+                            'current_test':current_test,
+                            'result':result})
 
 
 

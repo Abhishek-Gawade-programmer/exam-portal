@@ -6,50 +6,77 @@
 
 
 <div class="row">
-<section class="border p-4 text-center mb-4">
-      <div id="timer" class="float-right">
-        <!-- <span class="badge bg-primary">Primary</span> -->
-        <h4>
-        <span id="hours" class="badge bg-secondary mr-0">00 Hr</span>
-        <span id="minutes" class="badge bg-success mr-0">00 Min </span>
-        <span id="seconds" class="badge bg-danger mr-0">00 Sec</span>
-      </h4>
-      </div>
-    </section>
+      <div class="contentarea">
+      
+        <div class="camera">
+        <video id="video" height="200" width="200" class="">Video stream not available.</video>
+         </div>
+         <canvas id="canvas" style="display: none;">
 
-</div>
-<div class="row">
+                <div class="output">
+                    <img id="photo" alt="The screen capture will appear in this box.">
+                </div></canvas>
+      </div>
+     
+
+
+
+  </div>
+    <div class="alert alert-success fade show" role="alert" id='main_message' style="display: none;">
+      
+      <span id='message'>
+        <strong>Question No :
+          <span id='question_number'></span>
+         </strong> Save with Option :<span id='answer_number'></span>
+
+      </span>
+
+  </div>
+<div class="row" >
 
     
-      <div class="col-12 col-md-12">
+      <div class="col-12 col-md-12" >
           <div id='question_frame' >
             <div class="card">
                             {% csrf_token %}
                    
                 </div>
             </div>
+            </div>
 
-            <nav aria-label="Page navigation example" class="mb-10">
+            <!-- <nav aria-label="Page navigation example" class="mb-10"> -->
   
+              <div class="col-12 col-md-12">
+              <div class="py-3" style="border:solid;border-radius: 30px;">
+                  <div class="container">
+                  <div class="row ">
+                    <div class="col mt-3">
+                        <button type="button" class="btn btn-success btn-rounded btn-lg btn-block" id='previous_question'> <b>Previous</b></button>
+                     </div>
 
-                <div class="row ">
-                  <div class="col mt-3">
-                    
-                    <a class="btn  btn-block btn-danger"  tabindex="-1" data-toggle="modal" data-target="#remportexamodel"><b>Report</b></a>
-                  </div>
-                  <div class="col mt-3">
-                             <a class="btn btn-lg btn-primary float-right"  data-toggle="modal" data-target="#exampleModalLong" id='show_all_question'>
-                    Show all Questions</a>
-                  </div>
-                  <div class="col mt-3"><a class="btn  btn-block btn-info"  tabindex="-1" id='bookmark_question'><b>Bookmark</b></a></div>
-                  <div class="col mt-3"><a class="btn  btn-block btn-warning"  tabindex="-1" id='previous_question'><b>Previous</b></a></div>
-                  <div class="col mt-3"><a class="btn  btn-block btn-primary" ><b>2</b></a></div>
-                  <div class="col mt-3"><a class="btn  btn-block btn-success "  id='next_question'><b>Next</b></a></div>
-                  <div class="col mt-3"><a class="btn  btn-block btn-danger" style="color: white;" id='next_question' data-toggle="modal" data-target="#exampleModalCenter"><b>Submit Exam</b></a></div>
-               </div>
-                                
-            </nav>
-        </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-primary btn-rounded btn-lg btn-block" id='next_question'> <b>Next</b></button>
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-secondary btn-rounded btn-lg btn-block" id='bookmark_question'> <b>Bookmark</b></button>
+    
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-dark btn-rounded btn-lg btn-block" aria-pressed="true" data-toggle="modal"data-target="#remportexamodel"> <b>Report</b></button>
+
+                     
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-warning btn-rounded btn-lg btn-block" aria-pressed="true"  id='show_all_question' data-toggle="modal" data-target="#exampleModalLong"> <b style="color: black;">Questions</b></button>
+                   
+                    </div>
+                    <div class="col mt-3"><a class="btn  btn-block btn-danger btn-lg" style="color: white;" id='next_question' data-toggle="modal" data-target="#exampleModalCenter"><b>Submit Exam</b></a></div>
+                 </div>
+                </div> 
+              </div>                 
+              </div>  
+            <!-- </nav> -->
+        
 
 
 
@@ -97,7 +124,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger" id='report_question'>Report Question</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id='report_question'>Report Question</button>
       </div>
     </div>
   </div>
@@ -156,7 +183,6 @@
         if (minutes < "10") { minutes = "0" + minutes; }
         if (seconds < "10") { seconds = "0" + seconds; }
         if (hours=="00" && minutes=="00" && seconds=="00" ){
-          console.log('time over')       
           $j.ajax({
                 type: "GET",
 
@@ -179,7 +205,7 @@
 
 setInterval(function() { makeTimer(); }, 1000);
 </script>
-
+<script type="text/javascript" src="{% static 'js/video_capuring.js' %}"></script>
 
 
 

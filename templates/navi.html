@@ -5,12 +5,32 @@
     Exam Protal
   </a>
 
-  
+  {% if current_test %}
+   <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <h3><span class="badge badge-light" style="color:green">{{current_test.test_title}} (
 
-    <span id="time" class="float-right"></span>
+          <span style="color:red">
+            {{current_test.subject.subject_name}}
+          </span>
+          )
+        </span></h3>
+        
+      </li>
+
+    </ul>
+
+        <span id="time" class="navbar-text">
+                  <div id="timer" class="float-right" >
+            <h4>
+            <span id="hours" class="badge bg-secondary mr-0">00 Hr</span>
+            <span id="minutes" class="badge bg-success mr-0">00 Min </span>
+            <span id="seconds" class="badge bg-danger mr-0">00 Sec</span>
+          </h4>
+          </div></span>
 
 
-
+ {% endif %}
 
 </nav>
 

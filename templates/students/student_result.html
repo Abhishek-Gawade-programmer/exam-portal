@@ -1,0 +1,119 @@
+{% extends 'students/student_base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+  /* Styles required only for the example above */
+.scrollspy-example {
+  position: relative;
+/*  height: 200px;*/
+  overflow: auto;
+}
+    .list-group-item.smart_active {
+        z-index: 2;
+        color: #fff;
+        background-color: purple;
+        border-color: purple;
+    }
+</style>
+
+<h2 class="h3 fw-bold text-center">
+    <span class="float-left">
+        Test Result of 
+        <span style="color:deeppink;">{{current_test.test_title}}</span>
+    </span>
+    {% if result %}
+        <span class="badge bg-primary "> Your result {{score}} (Pass)</span>
+    {% else %}
+    <span class="badge bg-danger "> Your result {{score}} (fail)</span>
+    {% endif %}
+
+</h2>
+<hr>
+<div class="row">
+  <div class="col-md-8">
+    <!-- Spied element -->
+    <div
+      data-mdb-spy="scroll"
+      data-mdb-target="#scrollspy1"
+      data-mdb-offset="0"
+      class="scrollspy-example"
+    >
+    {% for question_answer in all_student_questions %}
+      <section id="question-{{ forloop.counter }}" class="mt-4">
+        <ul class="list-group">
+            <li class="list-group-item active" aria-current="true">
+                <span class="badge bg-secondary rounded-pill">
+                    Q {{ forloop.counter }}
+                </span>
+                {{question_answer.question.question_title}} 
+                <span class="float-right">
+                    <h5>
+                        {% if question_answer.student_option == question_answer.question.correct_option  %}
+                            <span class="badge bg-success rounded-pill">+1</span>
+                        {% else %}
+                            <span class="badge bg-danger rounded-pill">-1</span>
+                        {% endif %}
+                    </h5>
+                </span>
+            </li>
+                <li class="list-group-item {% if '1' == question_answer.question.correct_option  %}list-group-item-success {% elif '1' == question_answer.student_option and  question_answer.student_option != question_answer.question.correct_option %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 1 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_1}}</span>
+                  </li> 
+
+                     <li class="list-group-item {% if '2' == question_answer.question.correct_option  %}list-group-item-success {% elif '2' == question_answer.student_option  and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 2 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_2}}</span>
+                  </li>
+                <li class="list-group-item {% if '3' == question_answer.question.correct_option  %}list-group-item-success {% elif '3' == question_answer.student_option and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 3 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_3}}</span>
+                  </li>
+                <li class="list-group-item {% if '4' == question_answer.question.correct_option  %}list-group-item-success {% elif '4' == question_answer.student_option  and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 4 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_4}}</span>
+                  </li>
+          </ul>
+       </section>
+    {% endfor %}
+    </div>
+    <!-- Spied element -->
+  </div>
+
+  <div class="col-md-4">
+    <!-- Scrollspy -->
+    <div id="scrollspy1" class="sticky-top">
+
+        <div class="list-group">
+
+          <li
+            type="button"
+            class="list-group-item list-group-item-action smart_active"
+            aria-current="true">
+
+            All Questions 
+            <span class="badge bg-success float-right" style="font-size: 70%">{{score}}</span>
+          </li>
+                 
+
+             {% for question_answer in all_student_questions %}
+
+                  <a type="button" class="list-group-item list-group-item-action" href="#question-{{ forloop.counter }}">
+                    <span class="badge bg-secondary rounded-pill">Q {{forloop.counter }}</span> 
+                         {{question_answer.question.question_title}}
+                  </a>
+
+  
+                {% endfor %}
+                
+        
+        </div>
+
+    </div>
+    <!-- Scrollspy -->
+  </div>
+</div>
+</label>
+
+{% endblock content %}

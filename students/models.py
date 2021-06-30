@@ -37,7 +37,7 @@ class Subject(models.Model):
 
 
     def no_of_test_in_subject(self):
-        return Test.objects.filter(subject=self).count()
+        return Test.objects.filter(subject=self,make_active=True).count()
 
     def __str__(self):
         return self.subject_name
@@ -65,17 +65,19 @@ class Test(models.Model):
 
     def allow_student_for_exam(self,student):
         time=timezone.now()
+
         if (time>self.exam_start_time) and (time<self.exam_end_time):
             print('sdfgs')
             if UserQuestionList.objects.filter(student=student,test=self).exists():
                 test_for_student=UserQuestionList.objects.get(student=student,test=self)
-                if (not test_for_student.submit_time) and (test_for_student.start_time  < time)  :
+                if timezone.now() > test_for_student.end_time:
+                    return False
+                elif (not test_for_student.submit_time) and (test_for_student.start_time  < time)  :
                     return True
                 else:
                     return False
             return True
         else:
-            print('fffffffff')
             return False
 
     def get_total_questions(self):

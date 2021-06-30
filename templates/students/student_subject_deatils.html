@@ -47,17 +47,17 @@
 <div class="row">
 {% for test in test_in_subject %}
      <div class="form-group col-md-6 mb-3">
-              <ul class="list-group">
+              <ul class="list-group" style="overflow: auto;">
                   <li class="list-group-item active" aria-current="true">
                   {{test.test_title}}
                    {% if   request.user|eligible_student_test:test.id  %}
-                    {#   <a href="{% url 'quiz-list' test.pk %}"> #}
+        
 
 
                         <button type="button" id='start_test_button' test-id='{{test.pk}}' class="float-right  btn btn-primary btn-sm btn-rounded start_test" data-toggle="modal" data-target="#exampleModalCenter">
                                 <i class="fas fa-play"></i> Start Test
                                 </button>
-                        {# </a> #}
+                       
                 {% endif %}
                                   
 
@@ -83,19 +83,55 @@
                   </li>
 
                  <li class="list-group-item">
-                    <span class="fw-bold float-left">The Test Will Start at</span>
+                    <span class="fw-bold float-left"> Start Time</span>
                     <span class="fw-bold float-right">{{test.exam_start_time}}</span>
                   </li>
 
                 <li class="list-group-item">
-                    <span class="fw-bold float-left">The Test Will End at</span>
+                    <span class="fw-bold float-left"> End Time</span>
                     <span class="fw-bold float-right">{{test.exam_end_time}}</span>
                   </li>
+                  <li class="list-group-item">
+                     <span class="fw-bold float-left">Result Status </span>
+                          <span class="fw-bold float-right">
+                               {% if  test.show_result   %}
+                                   {% if not  request.user|eligible_student_test:test.id  %}
+
+                                   <div class="btn-group dropup">
+                                    <a  href="{% url 'student_result' test.pk current_student.pk %}">
+                                          <button type="button" class="btn btn-success btn-sm">
+                                           Show Result
+                                          </button> </a>
+                                 
+
+            
+
+
+                                {% endif %}
+                                {% else %}
+                                <a>
+                                    <button type="button" class="btn  btn-danger btn-sm px-2">
+                                      <i class="far fa-times-circle fa-2x"></i></a>
+                                      </button> 
+                                  
+                                {% endif %}
+                                </span>
+                                    </li>
 
         
             </ul>
 
     </div>
+
+    {% empty %}
+    <div class="jumbotron">
+  <p class="lead">Teacher Have't Assgined you a Test Yet</p>
+  <hr class="my-4">
+  <p>Go and Study Don't waste your time</p>
+  <p class="lead">
+<a class="btn btn-primary btn-lg" href="{% url 'student_dashboard' %}" role="button">My Subjects</a>
+  </p>
+</div>
 
 {% endfor %}
           

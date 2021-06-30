@@ -17,7 +17,7 @@
               <a href="{% url 'student_subject_detail' subject.id %}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{subject.subject_name}}  ({{subject.subject_code}})</h5>
-                  <small class="text-muted">3 days ago</small>
+                  <small class="text-muted">{{subject.no_of_test_in_subject}} Tests Included</small>
                 </div>
 
                 <small class="text-muted"> Subject Teachers  :

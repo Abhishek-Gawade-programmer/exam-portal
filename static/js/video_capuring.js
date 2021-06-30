@@ -25,6 +25,9 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
     var canvas = null;
     var photo = null;
     var startbutton = null;
+    function sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
 
     function startup() {
         video = document.getElementById('video');
@@ -43,7 +46,7 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
             .catch(function(err) {
                 console.log("An error occurred: " + err);
                 // location.reload();
-                alert('Please Make Sure Your Device have cemera or allow the permission of cemera in brower');
+                // alert('Please Make Sure Your Device have cemera or allow the permission of cemera in brsower');
                 // $j('#exampleModalCenter').modal('hide')
             });
 
@@ -62,14 +65,19 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
                 streaming = true;
             }
         }, false);
+              var intervalId = setInterval(function() {
+          console.log('siomentbsdfh is capturatime')
+          takepicture();
+        }, 5000)
+            
 
-        startbutton.addEventListener('click', function(ev) {
-            takepicture();
-            ev.preventDefault();
-        }, false);
+        // startbutton.addEventListener('click', function(ev) { takepicture();
+        //     ev.preventDefault();
+        // }, false);
 
         clearphoto();
     }
+    
 
 
     function clearphoto() {
@@ -98,6 +106,45 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
         }
     }
 
+    function send_picture_database() {
+        var context = canvas.getContext('2d');
+        if (width && height) {
+            canvas.width = width;
+            canvas.height = height;
+            context.drawImage(video, 0, 0, width, height);
+
+          data = canvas.toDataURL('image/png');
+
+            $j.ajax({
+                type: "POST",
+
+                // url: "/verification-student/",
+                 data: {
+                    csrfmiddlewaretoken: csrftoken,
+
+                    current_test: window.current_test,
+                    data_img : data
+                },
+
+                success: function (response) {
+                    console.log('sended to data base')
+                    
+                },
+            });
+
+
+
+
+        } else {
+            clearphoto();
+        }
+    }
+
+
+
+
+
+
     window.addEventListener('load', startup, false);
 
 
@@ -108,6 +155,7 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
         vefication_of_student();
 
         function vefication_of_student() {
+
             $j.ajax({
                 type: "POST",
 
@@ -120,15 +168,21 @@ all_start_exam_buttons.forEach(item => item.addEventListener('click',
                 },
 
                 success: function (response) {
-                    console.log('gond job')
                     window.location.replace(
                         "http://localhost:8000/test/"+window.current_test+'/'
                     );
                 },
             });
+
+
+
+
+
         }
         
     });
+
+  
 
 
 
