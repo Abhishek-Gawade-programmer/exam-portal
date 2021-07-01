@@ -142,8 +142,22 @@ def verification_of_student(request):
         student_data=StudentExamCapture.objects.create(student=request.user,test=current_test,student_image=data)
         student_data.save()
         return JsonResponse({'success':'true'},safe=False)
-        # return redirect("quiz-list",test_id=current_test.id)
 
+
+@login_required
+@allow_to_students
+def taking_photo_of_student(request):
+    if request.method=='POST' :
+        current_test=Test.objects.get(id=int(request.POST.get('current_test')))
+        from django.core.files.base import ContentFile
+        data_img=request.POST.get('data_img')
+        format, imgstr = data_img.split(';base64,') 
+        ext = format.split('/')[-1] 
+        data = ContentFile(base64.b64decode(imgstr),name=f'{request.user.get_full_name()}.' + ext )
+
+        student_data=StudentExamCapture.objects.create(student=request.user,test=current_test,student_image=data)
+        student_data.save()
+        return JsonResponse({'success':'true'},safe=False)
 
 
 

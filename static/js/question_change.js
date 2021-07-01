@@ -15,6 +15,7 @@ $j(window).on("load", function () {
 
     var report_question = document.getElementById("report_question");
     var submit_exam = document.getElementById("submit_exam");
+    var total_number_of_question=parseInt(document.getElementById("test_data").getAttribute('test-question'))
 
     window.navigation_question = navigation_question;
 
@@ -35,24 +36,15 @@ $j(window).on("load", function () {
 
             success: function (response) {
                 $j(get_message).hide();
+                
 
-                if (response.next === "false") {
-                    $j(next_question).addClass("disabled");
-                } else {
-                    if (window.question_number === 1) {
-                        $j(previous_question).addClass("disabled");
-                    } else {
-                        $j(previous_question).removeClass("disabled");
-                    }
-
-                    $j(next_question).removeClass("disabled");
 
                     question_frame_element.innerHTML = ` <div class="card">
                                             <div class="card-header">
                                             <input type="hidden" name="csrfmiddlewaretoken" value="${response.csrf_token}">
                                                   
                                               <span class="btn btn-danger btn-rounded btn-lg " style='font-size:100%'>
-                                              Q ${question_number} </span> 
+                                              Q ${question_number} of <span id='total_question'></span> </span> 
                                               <span style="margin-left: 20px;" id='question_title' data='${response.id}'>
                                               ${response.question_title}</span> 
                                             </div>
@@ -72,6 +64,26 @@ $j(window).on("load", function () {
                                       </div>
                             `;
 
+
+                     if (window.question_number === 1) {
+                        $j(previous_question).addClass("disabled");
+                        } 
+                    else {
+                        $j(previous_question).removeClass("disabled");
+                    }
+                    
+                     if (window.question_number === total_number_of_question) {
+                        $j(next_question).addClass("disabled");
+                        } 
+                    else {
+                        $j(next_question).removeClass("disabled");
+                    }
+                    
+
+
+                            console.log('cuurect question beboew',window.question_number,total_number_of_question)
+
+                         
                     var get_question =
                         document.getElementById("question_title");
 
@@ -110,17 +122,22 @@ $j(window).on("load", function () {
                                 },
 
                                 success: function (response) {
-                    get_message.innerHTML = `<strong>Question No :
-                                                                                            <span id='question_number'>${question_number}</span></strong> 
-                                                                                                Save with Option :<span id='answer_number'>${option_number}
-                                                                                            </span>`;
+                                         get_message.innerHTML = `<strong>Question No :
+                                    <span id='question_number'>${question_number}</span></strong> 
+                                        Save with Option :<span id='answer_number'>${option_number}
+                                    </span>`;
 
                                     $j(get_message).show();
                                 },
+
+
                             });
                         })
+
+
                     );
-                }
+
+                
             },
         });
     }
@@ -128,14 +145,10 @@ $j(window).on("load", function () {
     navigation_question(window.question_number);
 
     next_question.addEventListener("click", (event) => {
-        console.log("next");
         navigation_question(window.question_number + 1);
     });
 
     previous_question.addEventListener("click", (event) => {
-        console.log(previous_question);
-
-        console.log("previous");
         navigation_question(window.question_number - 1);
     });
 
@@ -158,6 +171,7 @@ $j(window).on("load", function () {
                 }
 
                 $j(get_message).show();
+
             },
         });
     });
@@ -253,7 +267,6 @@ $j(window).on("load", function () {
     });
 
     submit_exam.addEventListener("click", (event) => {
-        console.log("submit cl8ick");
 
         submit_exam_fuction();
 

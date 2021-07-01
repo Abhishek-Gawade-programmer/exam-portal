@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (initial_setup,save_question,navigation_question,
                 get_all_question_details,toogle_bookmark,report_question,
                 submit_exam,StudentSignUpView,student_dashboard,student_subject_detail,
-                verification_of_student,student_result
+                verification_of_student,student_result,taking_photo_of_student
                 )
 
 
@@ -27,5 +27,7 @@ urlpatterns = [
         path('navigation-question/',navigation_question,name ='navigation_question'),
 
         path('verification-student/',verification_of_student,name ='verification_of_student'),
+        
+        path('takingphoto-student/',taking_photo_of_student,name ='taking_photo_of_student'),
          path('student-result/<int:test_id>/<int:student_id>/',student_result,name ='student_result'),
         ]
