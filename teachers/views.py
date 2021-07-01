@@ -22,10 +22,12 @@ def allow_to_hod(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
             if request.user.is_hod:
-                print('verified hod')
-                return view_func(request,*args, **kwargs)
+            	return view_func(request,*args, **kwargs)
             else:
-                return HttpResponse('not a hod')
+            	messages.success(request, f"Your authorized to access this page. Would you like to login to a different account?")
+            	return redirect("login")
+        else:
+        	return redirect("login")
 
     return wrapper_func
 
@@ -34,8 +36,19 @@ def allow_to_hod(view_func):
 def allow_to_teacher_hod(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.is_teacher or request.user.is_hod:
-                return view_func(request,*args, **kwargs)
+            if (request.user.is_teacher) or request.user.is_hod:
+            	print('sjkdbhjsbhufb')
+            	if request.user.is_hod:
+            		return view_func(request,*args, **kwargs)
+            	else:
+            		if get_object_or_404(Teacher, user = request.user).verify:
+            			return view_func(request,*args, **kwargs)
+            		else:
+                		messages.error(request, f"Your account is not verified please contact the HOD for same")
+                		return redirect("login")
+            else:
+            	messages.success(request, f"Your authorized to access this page. Would you like to login to a different account?")
+            	return redirect("login")
         else:
          	return redirect("login")
 
@@ -329,6 +342,7 @@ def student_exam_result(request, test_id,student_id):
 	    					student=current_student.user,test=current_test
     						))
     score=f'{student_questions.number_of_correct_answers()}/{current_test.total_question}'
+    result=True if student_questions.number_of_correct_answers()>current_test.passing_marks else False
     return render(request, "teachers/test_result_of_student.html", {'all_student_questions':all_student_questions_with_sr,'score':score})
 
 

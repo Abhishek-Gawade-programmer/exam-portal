@@ -1,7 +1,7 @@
 {% load static %}
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="#">
-    <img src="http://gymwebsite.pythonanywhere.com/static/logo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+<nav class="navbar navbar-light bg-light sticky-top">
+  <a class="navbar-brand" href="{% url 'main_page' %}">
+    <img src="{% static 'logo.png' %}" width="60" height="40" class="d-inline-block align-top" alt="">
     Exam Protal
   </a>
 

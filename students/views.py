@@ -18,7 +18,6 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import StudentSignUpForm,TeacherSignUpForm
 
-from verify_email.email_handler import send_verification_email
 from django.contrib.auth import logout
 
 
@@ -50,10 +49,8 @@ class StudentSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        inactive_user = send_verification_email(self.request, user)
-        # login(self.request, user)
-        # return redirect('students:quiz_list')
-        return HttpResponse('nice work')
+        login(self.request, user)
+        return redirect('student_dashboard')
 
     
 
@@ -88,10 +85,15 @@ def allow_to_students(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
             if request.user.is_student:
-                print('verified sytudent')
-                return view_func(request,*args, **kwargs)
+                current_student=Student.objects.get(user=request.user)
+                if current_student.verify:
+                    return view_func(request,*args, **kwargs)
+                else:
+                    messages.error(request, f"Your account is not verify yet please contact the teacher for verfication")
+
             else:
-                return HttpResponse('not a student')
+
+                return HttpResponse('login')
 
     return wrapper_func
 
@@ -99,33 +101,28 @@ def allow_to_students(view_func):
 @allow_to_students
 def student_dashboard(request):
     current_student=Student.objects.get(user=request.user)
-    if current_student.verify:
+
         
-        # messages.success(request, f"successfully login as {request.user.username}")
-        all_subject=current_student.student_subjects.all()
-        return render(request,'students/student_dashboard.html',{
-            'all_subject':all_subject
-            })
-    messages.error(request, f"Your account is not verify yet")
-    logout(request) 
-    return redirect("login") 
+    all_subject=current_student.student_subjects.all()
+    return render(request,'students/student_dashboard.html',{
+        'all_subject':all_subject
+        })
+
 
 @login_required
 @allow_to_students
 def student_subject_detail(request,pk):
     current_student=Student.objects.get(user=request.user)
-    if current_student.verify:
-        subject=Subject.objects.get(pk=pk)
-        test_in_subject=Test.objects.filter(subject=subject,make_active=True)
+    subject=Subject.objects.get(pk=pk)
+    test_in_subject=Test.objects.filter(subject=subject,make_active=True)
 
-        return render(request,'students/student_subject_deatils.html',{
-            'subject':subject,
-            'test_in_subject':test_in_subject,
-            'current_student':current_student
-            })
-    messages.error(request, f"Your account is not verify yet")
-    logout(request) 
-    return redirect("login") 
+    return render(request,'students/student_subject_deatils.html',{
+        'subject':subject,
+        'test_in_subject':test_in_subject,
+        'current_student':current_student
+        })
+
+
 
 
 @login_required

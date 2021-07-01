@@ -9,6 +9,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup/', TemplateView.as_view(template_name="chose_your_signup.html"), name='signup'),
+
+    path('', TemplateView.as_view(template_name="main_home_page.html"), name='main_page'),
     path('admin/', admin.site.urls),
     path('teachers/', include('teachers.urls')),
     path('verification/', include('verify_email.urls')),

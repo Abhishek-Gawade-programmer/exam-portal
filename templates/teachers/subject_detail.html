@@ -19,14 +19,9 @@
 
 <span class="float-right  pt-2">
     <a href="{% url 'test_create' subject.id %}" >
-        <button type="button" class="btn btn-dark btn-rounded mt-2 "><i class="fas fa-plus fa-2x"></i></button>
+        <button type="button" class="btn btn-dark btn-rounded mt-2 ">Create a new Test</button>
     </a>    
-    <a href="{% url 'test_create' subject.id %}" >
-        <button type="button" class="btn btn-success btn-rounded mt-2 "><i class="fas fa-chart-pie fa-2x"></i></button>
-    </a>    
-    <a href="{% url 'test_create' subject.id %}" >
-        <button type="button" class="btn btn-warning btn-rounded mt-2 "><i class="fas fa-table fa-2x"></i></button>
-    </a>
+
 </span>
 </h6>
 <br>
@@ -98,6 +93,9 @@
             </ul>
 
     </div>
+    {% empty %}
+           <span class="display-4">No test please craete a new test</span>
+    
 
 {% endfor %}
           

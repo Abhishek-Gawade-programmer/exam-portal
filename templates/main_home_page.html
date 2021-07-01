@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<center>
+  <img src="{% static 'logo.png' %}" width="200" height="150" class="d-inline-block align-top" alt="">
+  <hr width="50%">
+<h5 class="mb-3 h5 text-muted">Creating a secure Exam Platform a Great Alternative for Google Forms</h4>
+  <a href="{% url 'login' %}">
+  <button type="button" class="btn btn-danger btn-lg">All in one Login</button>
+  </a>
+</center>
+<hr class="my-4" />
+<div class="row">
+  <div class="col-lg-4 col-md-12 mb-4">
+    <center>
+
+    <h5 class="mb-3 h5">Student Dashboard </h5>
+    <p class="">
+      Student able to login to dashboard and attempt the test and see result and have a timer when attend the test and camera should be on at  time of test
+    </p>
+      <button type="button" class="btn btn-primary">Demo login</button>
+</center>
+  </div>
+  <div class="col-lg-4 col-md-6 mb-4"> 
+   <center>
+    <h5 class="mb-3 h5">Teachers Dashboard </h5>
+    <p class="">
+      Teacher  able to verify the student after registering  and see the class student and create a new test and question  and see the progress of class 
+    </p>
+    <button type="button" class="btn btn-secondary">Demo login </button>
+  </center>
+  </div>
+  <div class="col-lg-4 col-md-6 mb-4"> 
+   <center>
+    <h5 class="mb-3 h5">HOD Dashboard </h5>
+    <p class="">
+      Head Of Department able to verify the teachers after registering  and see the all details of teachers and edit them and see the all students with their performance 
+    </p>
+    <button type="button" class="btn btn-dark">Demo login </button>
+  </center>
+  </div>
+</div>
+ {% endblock content %}

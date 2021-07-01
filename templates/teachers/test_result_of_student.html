@@ -17,7 +17,18 @@
     }
 </style>
 
-<h2 class="h1 fw-bold text-center">Test Result </h2>
+<h2 class="h3 fw-bold text-center">
+    <span class="float-left">
+        Test Result of 
+        <span style="color:deeppink;">{{current_test.test_title}}</span>
+    </span>
+    {% if result %}
+        <span class="badge bg-primary "> Student result {{score}} (Pass)</span>
+    {% else %}
+    <span class="badge bg-danger "> Student result {{score}} (fail)</span>
+    {% endif %}
+
+</h2>
 <hr>
 <div class="row">
   <div class="col-md-8">
@@ -41,7 +52,7 @@
                         {% if question_answer.student_option == question_answer.question.correct_option  %}
                             <span class="badge bg-success rounded-pill">+1</span>
                         {% else %}
-                            <span class="badge bg-danger rounded-pill">-1</span>
+                            <span class="badge bg-danger rounded-pill">0</span>
                         {% endif %}
                     </h5>
                 </span>
