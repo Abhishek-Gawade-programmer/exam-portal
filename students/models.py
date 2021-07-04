@@ -192,7 +192,7 @@ class Teacher(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_subjects = models.ManyToManyField(Subject,related_name='student_subjects')
-    college_rollno =models.CharField(max_length=10,unique=True,error_messages={
+    college_rollno =models.CharField(max_length=10,unique=True,help_text = "Only <b>Number </b>",error_messages={
                 'unique':"This rollno has already been registered."})
     phone_number=models.CharField(max_length=20)
     verify=models.BooleanField(default=False)

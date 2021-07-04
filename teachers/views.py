@@ -12,7 +12,7 @@ from .forms import (TestCreateFrom,SubjectCreateFrom,
 						TeacherVerificationFrom)
 from django.contrib import messages
 
-from django.contrib.auth import login
+from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
 
 
@@ -382,6 +382,7 @@ def teacher_update_view(request, pk):
     	edit_teacher_verfiy_form=teacher_verfiy_form.save(commit=False)
     	current_teacher.teacher_subjects.clear()
     	for _ in teacher_verfiy_form.cleaned_data['teacher_subjects']:
+    		
     		current_teacher.teacher_subjects.add(_)
     	current_teacher.save()
     	edit_teacher_verfiy_form.save()
@@ -392,3 +393,22 @@ def teacher_update_view(request, pk):
     return render(request, "teachers/teacher_update_form.html", {
     			'teacher_verfiy_form':teacher_verfiy_form,'current_teacher':current_teacher})
 
+
+def demo_login(request,student=None,teacher=None,hod=None):
+	if student:
+		user =authenticate(request,
+				username='demo_student',
+				password='w8Q7kVdwvKcs7J2')
+	elif teacher:
+		print('asjebhjfsebhb')
+		user =authenticate(request,
+			username='demo_teacher',
+			password='758qccCN7GkBNBG')
+
+	elif hod:
+		user =authenticate(request,
+			username='hod',
+			password='hod123@#')
+
+	login(request, user)
+	return redirect("redirect_after_login") 

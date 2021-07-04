@@ -44,7 +44,7 @@ var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
             .catch(function (err) {
                 console.log("An error occurred: " + err);
                 // location.reload();
-                // alert('Please Make Sure Your Device have cemera or allow the permission of cemera in brsower');
+                alert('Please Make Sure Your Device have cemera or allow the permission of cemera in brsower');
                 // $j('#exampleModalCenter').modal('hide')
             });
 
@@ -70,9 +70,8 @@ var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
         if (window.location.href.indexOf('/test/') >-1) {
             var intervalId = setInterval(function () {
-                console.log("stated  is capturing");
                 send_picture_database();
-            }, 50000);
+            }, 200000);
         } else {
 
         startbutton.addEventListener('click', function(ev) { takepicture();

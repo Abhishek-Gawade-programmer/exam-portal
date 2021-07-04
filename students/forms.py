@@ -24,15 +24,15 @@ class StudentSignUpForm(UserCreationForm):
         widget=forms.CheckboxSelectMultiple,
         required=True)
 
-    college_rollno = forms.CharField(max_length=100,
-    	widget=forms.TextInput,
-    	required=True)
+    college_rollno = forms.CharField(max_length=100,label='Collage Roll Number',
+    	widget=forms.NumberInput,
+    	required=True,help_text = "Only Collage <b>Number </b>",)
 
     phone_number = forms.CharField(max_length=10,
     	widget=forms.NumberInput)
 
     def clean_college_rollno(self):
-        college_rollno = self.cleaned_data['college_rollno']
+        college_rollno ='FECOMPD'+self.cleaned_data['college_rollno']
         if Student.objects.filter(college_rollno=college_rollno).exists():
             raise forms.ValidationError("rollno already exists")
         return college_rollno
@@ -55,6 +55,7 @@ class StudentSignUpForm(UserCreationForm):
         student = Student.objects.create(user=user)
         student.college_rollno=self.cleaned_data.get('college_rollno')
         student.phone_number=self.cleaned_data.get('phone_number')
+
         student.save()
         return user
 
@@ -86,5 +87,9 @@ class TeacherSignUpForm(UserCreationForm):
         user.save()
         teacher = Teacher.objects.create(user=user)
         teacher.phone_number=self.cleaned_data.get('phone_number')
+        teacher.class_teacher_roll='FECOMPD'
+        for _ in self.cleaned_data.get('teacher_subjects'):
+            _.teachers.add(user)
+            teacher.teacher_subjects.add(_)
         teacher.save()
         return user

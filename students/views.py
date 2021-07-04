@@ -90,6 +90,7 @@ def allow_to_students(view_func):
                     return view_func(request,*args, **kwargs)
                 else:
                     messages.error(request, f"Your account is not verify yet please contact the teacher for verfication")
+                    return redirect('login')
 
             else:
 
@@ -383,6 +384,8 @@ def student_result(request, test_id,student_id):
                             'current_student':current_student,
                             'current_test':current_test,
                             'result':result})
+
+
 
 
 

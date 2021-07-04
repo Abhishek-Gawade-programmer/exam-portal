@@ -16,12 +16,16 @@
 
                 <form class="login" method="POST" action="{% url 'login' %}">
                   {% csrf_token %}
+                  <div class="col-md-8 mt-3">
+
                   {{ form|crispy }}
+                   </div>
                   {% if redirect_field_value %}
                   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                   {% endif %}
-                  <a class="btn btn-dark" href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}  </a>
+                  <hr>
                   <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                  <a class="btn btn-dark" href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}  </a>
                 </form>
           </div>
     </div>
