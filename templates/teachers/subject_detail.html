@@ -5,14 +5,6 @@
 {% block content %}
 
 
-
-
-
-
-
-
-
-
 <h4 class="h4 fw-bold"> Tests in <span style="color:#1E90FF">{{subject}} </span><span style="color:red">[ {{subject.subject_code}} ] </span> 
 <a href="{% url 'subject_update' subject.pk %}">
     <button type="button" class="btn btn-secondary btn-sm btn-floating"> <i class="fas fa-pencil-alt "></i></button></a>
@@ -71,22 +63,20 @@
                             </span>
                   </li>
                 <li class="list-group-item">
-                    <span class="fw-bold float-left">Total Questions </span>
-                    <span class="fw-bold float-right">{{test.total_question}}</span>
+                    <span class="fw-bold float-left">Added / Total Questions </span>
+                    <span class="fw-bold float-right">{{test.get_total_questions}}/{{test.total_question}}</span>
                   </li>            
-                   <li class="list-group-item">
-                    <span class="fw-bold float-left">Questions Added</span>
-                    <span class="fw-bold float-right">{{test.get_total_questions}}</span>
-                  </li>
-                  
-
-                <li class="list-group-item">
-                    <span class="fw-bold float-left">Maximum  marks </span>
-                    <span class="fw-bold float-right">{{test.max_mark}}</span>
-                  </li>
-                <li class="list-group-item">
+                 <li class="list-group-item">
                     <span class="fw-bold float-left">Passing marks </span>
                     <span class="fw-bold float-right">{{test.passing_marks}}</span>
+                  </li>
+                <li class="list-group-item">
+                    <span class="fw-bold float-left">Start Time </span>
+                    <span class="fw-bold float-right">{{test.exam_start_time}}</span>
+                  </li>
+                    <li class="list-group-item">
+                    <span class="fw-bold float-left">End Time </span>
+                    <span class="fw-bold float-right">{{test.exam_end_time}}</span>
                   </li>
 
         

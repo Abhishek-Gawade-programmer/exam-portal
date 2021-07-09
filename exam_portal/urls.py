@@ -19,7 +19,6 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="main_home_page.html"), name='main_page'),
     path('admin/', admin.site.urls),
     path('teachers/', include('teachers.urls')),
-    path('verification/', include('verify_email.urls')),
 
     path('redirect-user/', redirect_after_login,
         name='redirect_after_login'),

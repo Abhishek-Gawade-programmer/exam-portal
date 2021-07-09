@@ -37,7 +37,6 @@ def allow_to_teacher_hod(view_func):
     def wrapper_func(request,*args, **kwargs):
         if request.user.is_authenticated:
             if (request.user.is_teacher) or request.user.is_hod:
-            	print('sjkdbhjsbhufb')
             	if request.user.is_hod:
             		return view_func(request,*args, **kwargs)
             	else:
@@ -194,23 +193,9 @@ def test_update_view(request, pk):
     if test_update_form.is_valid():
     	edit_test_update_form=test_update_form.save(commit=False)
 
-
-
-    	if(test_active_status != edit_test_update_form.make_active) and (
-
-    		timezone.now() > test_object.exam_start_time):
-
-    		messages.error(request, f"You Can't change the active status of exam as time is over")
-    		return redirect("test_update",pk=test_object.subject.id)
-
-    	elif  (edit_test_update_form.exam_end_time < edit_test_update_form.exam_start_time):
+    	if  (edit_test_update_form.exam_end_time < edit_test_update_form.exam_start_time):
     		messages.error(request, f"make sure dates times of start exam and end exam are correct")
     		return redirect("test_update",pk=test_object.subject.id)
-
-    	elif  (edit_test_update_form.make_active) and (test_start_time!=edit_test_update_form.exam_start_time):
-    		messages.error(request, f"you cant changes time as active is on")
-    		return redirect("test_update",pk=test_object.subject.id)
-
     	elif  (edit_test_update_form.make_active) and (test_object.get_total_questions()<edit_test_update_form.total_question):
     		messages.error(request, f"Yon can't MAKE ACTIVE as number of questions not SATISFIED")
     		return redirect("test_update",pk=test_object.subject.id)
@@ -334,6 +319,8 @@ def student_exam_result(request, test_id,student_id):
     student_questions=UserQuestionList.objects.get(student=current_student.user,test=current_test)
     student_questions_with_sr=json.loads(student_questions.test_question)
     all_student_questions_with_sr=[]  
+
+    all_pictures=StudentExamCapture.objects.filter(student=current_student.user,test=current_test)
     for student_question in student_questions_with_sr:
     	question= get_object_or_404(Question, id = student_question)
     	all_student_questions_with_sr.append(
@@ -343,7 +330,11 @@ def student_exam_result(request, test_id,student_id):
     						))
     score=f'{student_questions.number_of_correct_answers()}/{current_test.total_question}'
     result=True if student_questions.number_of_correct_answers()>current_test.passing_marks else False
-    return render(request, "teachers/test_result_of_student.html", {'all_student_questions':all_student_questions_with_sr,'score':score})
+    return render(request, "teachers/test_result_of_student.html", {
+    					'current_student':current_student,
+    					'all_student_questions':all_student_questions_with_sr,
+    					'score':score,
+    					'all_pictures':all_pictures})
 
 
 @allow_to_hod
@@ -392,6 +383,14 @@ def teacher_update_view(request, pk):
  
     return render(request, "teachers/teacher_update_form.html", {
     			'teacher_verfiy_form':teacher_verfiy_form,'current_teacher':current_teacher})
+
+
+
+
+
+def report_student_test(request,test_id,student_id):
+    current_student = get_object_or_404(Student, pk = student_id)
+    current_test= get_object_or_404(Test, pk = test_id)
 
 
 def demo_login(request,student=None,teacher=None,hod=None):

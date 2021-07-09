@@ -17,9 +17,9 @@
     }
 </style>
 
-<h2 class="h3 fw-bold text-center">
+<h2 class="h1 fw-bold text-center">
     <span class="float-left">
-        Test Result of 
+        Test Result of  {{current_student.college_rollno}}
         <span style="color:deeppink;">{{current_test.test_title}}</span>
     </span>
     {% if result %}
@@ -29,7 +29,40 @@
     {% endif %}
 
 </h2>
+<br>
 <hr>
+
+<div> 
+  <h7 class="h3 fw-bold text-center float-left" style="color: #00b74a;">Student Exam Photes</h7>
+  <button type="button" class="btn btn-danger float-right"  aria-pressed="true" data-toggle="modal"data-target="#remportspamstudent">Report Spam <i class="fas fa-flag"></i></button>
+  <br>
+</div>
+<br>
+<br>
+<hr>
+<div class="row row-cols-1 row-cols-md-{{all_pictures|length}} g-7">
+  {% for picture in all_pictures %}
+
+  <div class="col">
+    <div class="card h-100">
+      <img
+        src="{{picture.student_image.url}}"
+        class="card-img-top"
+        alt="..."
+        sty
+        width="520"
+        heoght="720"
+      />
+      <div class="card-body">
+        <h5 class="card-title" style="font-size: 100%;"> {{picture.student.get_full_name}}</h5>
+        <p class="card-text">{{picture.created}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
 <div class="row">
   <div class="col-md-8">
     <!-- Spied element -->
@@ -116,4 +149,42 @@
 </div>
 </label>
 
+<div class="modal" id="remportspamstudent" tabindex="-1" role="dialog" aria-labelledby="remportexamodelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+ 
+        <h5 class="modal-title" id="exampleModalLongTitle">Report  Student As A Spam</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" role="alert">
+          Follwing is some rules that will be apply when you report the user
+          <hr>
+        <ul>
+          <li>Student all answers and detail related(images ,exam session time) to the test will be deleted</li>
+          <li>Student have to give the test again</li>
+          <li>You have to make sure that you extend the time for them to give the test  </li>
+          <li>The Updated marks willl be display instead of that</li>
+        </ul>
+      </div>
+        <div class="form-group">
+    <label for="exampleFormControlTextarea1">Give Descrption</label>
+    <form>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter what is reason you report the student" required=""></textarea>
+
+
+    </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger"  id='report_question'>Report Question</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
 {% endblock content %}

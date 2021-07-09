@@ -132,7 +132,6 @@ var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
                 },
 
                 success: function (response) {
-                    console.log("sended to data base");
                 },
             });
         } else {

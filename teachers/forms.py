@@ -9,13 +9,18 @@ class TestCreateFrom(forms.ModelForm):
         fields ='__all__'
         exclude=('teacher','subject')
 
-        widgets = {
-               'exam_start_time': forms.DateTimeInput(attrs={"type":"datetime" },),
+  #   <label for="appt-time">Choose an appointment time: </label>
+  # <input id="appt-time" type="time" name="appt-time" step="2">
 
-               'exam_end_time': forms.DateTimeInput(attrs={"type":"datetime-" },)
+
+        widgets = {
+                'duration': forms.TimeInput(attrs={ "type":"time","step":"2"},),
+
+               'exam_start_time': forms.DateTimeInput(attrs={"type":"datetime-local" },),
+
+               'exam_end_time': forms.DateTimeInput(attrs={"type":"datetime-local" },)
 
         }
-
 
 
 
@@ -61,3 +66,4 @@ class TeacherVerificationFrom(forms.ModelForm):
             'teacher_subjects': forms.CheckboxSelectMultiple(),
 
         }
+

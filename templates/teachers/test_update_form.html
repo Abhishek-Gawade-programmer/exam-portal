@@ -26,6 +26,11 @@
     <br />
   </form>
 </div>
+<script type="text/javascript">
+  document.getElementById('id_exam_start_time').setAttribute('value','{{test.exam_start_time|date:"Y-m-d\TH:i" }}')
+  document.getElementById('id_exam_end_time').setAttribute('value','{{test.exam_end_time|date:"Y-m-d\TH:i" }}')
+</script>
+
 
 
 {% endblock content %}

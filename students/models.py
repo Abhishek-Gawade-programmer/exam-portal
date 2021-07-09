@@ -51,14 +51,13 @@ class Test(models.Model):
 
     duration=models.TimeField(default='01:00:00',help_text = "Please use the following format: <em>HH-MM-SS</em>.")
     make_active=models.BooleanField(default=False,help_text = "Make Exam Active Please Be aware of it!!")
-    total_question=models.IntegerField(default=0,help_text = "Total Questions You Created")
-    max_mark=models.IntegerField(default=0,help_text = "Max marks of this Test")
+    total_question=models.IntegerField(default=0,help_text = "Total You want to student Answers<brq>")
     passing_marks=models.IntegerField(default=0,
         help_text = "Keep Zero for <b>No Passing Criteria </b> and Less than <b>Max</b> marks")
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
     created =models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
-    show_result=models.BooleanField(default=False)
+    show_result=models.BooleanField(default=False,help_text = "If you clicked from now student can  seee there result from ther dashboard ")
     
     def __str__(self):
         return self.test_title+ str(self.duration)
@@ -172,7 +171,11 @@ class StudentExamCapture(models.Model):
     created =models.DateTimeField(auto_now_add=True)
    
 
-
+class ReportStudent(models.Model):
+    student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
+    test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
+    description=models.TextField(max_length=300,unique=True,)
+    created =models.DateTimeField(auto_now_add=True)
 
 
 class Teacher(models.Model):
@@ -203,6 +206,11 @@ class Student(models.Model):
     def save(self, *args, **kwargs):
         self.college_rollno = self.college_rollno.upper()
         super().save(*args, **kwargs)
+
+
+
+
+   
 
 
 

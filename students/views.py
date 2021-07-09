@@ -249,10 +249,6 @@ def get_all_question_details(request):
 @allow_to_students
 def navigation_question(request):
     page_number=int(request.POST.get('page_number'))-1
-
-
-
-
     if page_number == len(Question.objects.all()):
         return JsonResponse({
             'success':'true',
