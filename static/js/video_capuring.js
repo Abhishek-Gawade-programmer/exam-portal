@@ -71,7 +71,7 @@ var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
         if (window.location.href.indexOf('/test/') >-1) {
             var intervalId = setInterval(function () {
                 send_picture_database();
-            }, 200000);
+            }, 1000*2);
         } else {
 
         startbutton.addEventListener('click', function(ev) { takepicture();

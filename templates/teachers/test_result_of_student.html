@@ -17,15 +17,16 @@
     }
 </style>
 
-<h2 class="h1 fw-bold text-center">
-    <span class="float-left">
+<h2 class="h3 fw-bold text-center">
+    <span class="float-left mt-2">
         Test Result of  {{current_student.college_rollno}}
+
         <span style="color:deeppink;">{{current_test.test_title}}</span>
     </span>
     {% if result %}
-        <span class="badge bg-primary "> Student result {{score}} (Pass)</span>
+        <span class="badge bg-primary mt-2"> Student result {{score}} (Pass)</span>
     {% else %}
-    <span class="badge bg-danger "> Student result {{score}} (fail)</span>
+    <span class="badge bg-danger mt-2"> Student result {{score}} (fail)</span>
     {% endif %}
 
 </h2>
@@ -40,7 +41,7 @@
 <br>
 <br>
 <hr>
-<div class="row row-cols-1 row-cols-md-{{all_pictures|length}} g-7">
+<div class="row row-cols-{% widthratio all_pictures|length 4 1%} row-cols-md-4 g-7">
   {% for picture in all_pictures %}
 
   <div class="col">
@@ -172,6 +173,7 @@
       </div>
         <div class="form-group">
     <label for="exampleFormControlTextarea1">Give Descrption</label>
+    {% csrf_token %}
     <form>
       <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter what is reason you report the student" required=""></textarea>
 
@@ -180,11 +182,54 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-danger"  id='report_question'>Report Question</button>
+          <button type="button" class="btn btn-danger"  id='report_question'>Report Student</button>
         </div>
     </form>
     </div>
   </div>
 </div>
 </div>
+
+
+<script type="text/javascript">
+  var report_question=document.getElementById('report_question');
+  var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  
+    report_question.addEventListener("click", (event) => {
+      console.log('sodfjgnsimngjksdmjgnsjnhu')
+        $j.ajax({
+            type: "POST",
+            url:"{% url 'report_student_test' %}",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                test_id: {{current_test.pk}},
+                student_id: {{current_student.pk}},
+                description:document.getElementById('exampleFormControlTextarea1').value,
+            },
+
+            success: function (response) {
+                    window.location.replace(
+                      "{% url 'my_students'  %}"
+                    );
+
+              console.log('done boss')
+
+            },
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock content %}

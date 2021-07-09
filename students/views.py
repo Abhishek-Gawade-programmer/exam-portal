@@ -79,6 +79,10 @@ def redirect_after_login(request):
     elif request.user.is_hod:
         
         return redirect("all_subject") 
+    else:
+        logout(request)
+        messages.error(request, f"Your login with diffent account please login  with correct account")
+        return redirect('login')
 
 
 def allow_to_students(view_func):
@@ -93,8 +97,8 @@ def allow_to_students(view_func):
                     return redirect('login')
 
             else:
-
-                return HttpResponse('login')
+                messages.error(request, f"Your login with diffent account please login  with correct account")
+                return redirect('login')
 
     return wrapper_func
 

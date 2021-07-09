@@ -39,6 +39,7 @@
             <a class="nav-link" href="{% url 'my_students' %}">All Students</a>
           </li>
 
+
         {% elif user.is_teacher %}
                 <li class="nav-item">
           <a class="nav-link " aria-current="page" href="{% url 'my_subject' %}">My Subjects</a>
@@ -46,9 +47,13 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'my_students' %}">My Class Students</a>
           </li>
+
           
 
         {% endif %}
+                    <li class="nav-item">
+            <a class="nav-link" href="{% url 'my_students' %}">Reported Students</a>
+          </li>
 
            {% block navibar %}
 

@@ -334,6 +334,7 @@ def student_exam_result(request, test_id,student_id):
     					'current_student':current_student,
     					'all_student_questions':all_student_questions_with_sr,
     					'score':score,
+    					'current_test':current_test,
     					'all_pictures':all_pictures})
 
 
@@ -388,9 +389,19 @@ def teacher_update_view(request, pk):
 
 
 
-def report_student_test(request,test_id,student_id):
-    current_student = get_object_or_404(Student, pk = student_id)
-    current_test= get_object_or_404(Test, pk = test_id)
+def report_student_test(request):
+	student_id=request.POST.get('student_id')
+	test_id=request.POST.get('test_id')
+	current_student = get_object_or_404(Student, pk = student_id)
+	current_test= get_object_or_404(Test, pk = test_id)
+	description= request.POST.get('description')
+	report_student=ReportStudent.objects.create(student=current_student.user,teacher=request.user,
+										test=current_test,description=description)
+	report_student.save()
+	messages.info(request, f"{student_id.college_rollno} has been reported successfully make sure you change the time for retest")
+	return JsonResponse({'success':'true','pk':current_student.pk},safe=False)
+
+
 
 
 def demo_login(request,student=None,teacher=None,hod=None):

@@ -172,10 +172,19 @@ class StudentExamCapture(models.Model):
    
 
 class ReportStudent(models.Model):
-    student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True)
+    student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True,related_name='student_report')
+    teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True,related_name='teacher_report')
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
     description=models.TextField(max_length=300,unique=True,)
     created =models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        #deleting all th recolds of that test
+        StudentAnswer.objects.filter(student = self.student,test=self.test).delete()
+        ReportQuestion.objects.filter(student = self.student,test=self.test).delete()
+        UserQuestionList.objects.filter(student = self.student,test=self.test).delete()
+        StudentExamCapture.objects.filter(student = self.student,test=self.test).delete()
+        super().save(*args, **kwargs)
 
 
 class Teacher(models.Model):
