@@ -44,7 +44,7 @@ $j(window).on("load", function () {
                                             <input type="hidden" name="csrfmiddlewaretoken" value="${response.csrf_token}">
                                                   
                                               <span class="btn btn-danger btn-rounded btn-lg " style='font-size:100%'>
-                                              Q ${question_number} of <span id='total_question'></span> </span> 
+                                              Q ${question_number} of <span id='total_question'>${total_number_of_question}</span> </span> 
                                               <span style="margin-left: 20px;" id='question_title' data='${response.id}'>
                                               ${response.question_title}</span> 
                                             </div>

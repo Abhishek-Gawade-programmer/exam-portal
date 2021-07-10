@@ -81,7 +81,7 @@ def redirect_after_login(request):
         return redirect("all_subject") 
     else:
         logout(request)
-        messages.error(request, f"Your login with diffent account please login  with correct account")
+        messages.error(request, f"Your login with different account please login  with correct account")
         return redirect('login')
 
 
@@ -97,7 +97,7 @@ def allow_to_students(view_func):
                     return redirect('login')
 
             else:
-                messages.error(request, f"Your login with diffent account please login  with correct account")
+                messages.error(request, f"Your login with different account please login  with correct account")
                 return redirect('login')
 
     return wrapper_func
@@ -106,11 +106,11 @@ def allow_to_students(view_func):
 @allow_to_students
 def student_dashboard(request):
     current_student=Student.objects.get(user=request.user)
-
-        
     all_subject=current_student.student_subjects.all()
+    reports_student=ReportStudent.objects.filter(student=current_student.user)
     return render(request,'students/student_dashboard.html',{
-        'all_subject':all_subject
+        'all_subject':all_subject,
+        'reports_student':reports_student
         })
 
 

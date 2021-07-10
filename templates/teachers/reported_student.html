@@ -1,0 +1,61 @@
+{% extends 'teachers/teachers_base.html' %}
+{% load static %}
+{% load templates_tags %}
+{% block content %}
+<h2 class="h1 fw-bold text-center">
+          Reported  Students As a Spam
+</h2>
+<hr>
+
+
+
+
+ <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Roll No</th>
+          <th scope="col">Full Name</th>
+          <th scope="col">Phone number</th>
+          <th scope="col">Which Test</th>
+          <th scope="col">Reason for Report</th>
+          <th scope="col">Test Given Or Not</th>
+        </tr>
+      </thead>
+      <tbody>
+            {% for reportstudent in  reported_student %}
+                    <tr>
+                          <th scope="row">
+                            <a href="{% url 'student_all_test_detail' reportstudent.student.pk %}">
+                              <button type="button" class="btn btn-dark btn-sm">{{reportstudent.get_student.college_rollno}}</button>
+                            </a>
+                            
+                          </th>
+
+                          <td>{{reportstudent.student.get_full_name}}</td>
+                          <td>{{reportstudent.get_student.phone_number}}</td>
+                          <td>{{reportstudent.test.test_title}}<br>
+                            [{{reportstudent.test.subject.subject_name}}]</td>
+                          <td>{{reportstudent.description}}</td>
+                          <td>
+                                {% if  reportstudent.student|eligible_student_test:reportstudent.test.id   %}
+
+                                  <button type="button"  class="btn  btn-success btn-sm px-2">
+                                      <i class="far fa-check-circle fa-2x"></i>
+                                {% else %}
+                                <a>
+                                    <button type="button" class="btn  btn-danger btn-sm px-2">
+                                      <i class="far fa-times-circle fa-2x"></i></a>
+                                  
+                                {% endif %}
+                            
+
+                          </td>
+                    </tr>
+            {% endfor %}
+
+
+      </tbody>
+    </table>
+</div> 
+{% endblock content %}

@@ -1,11 +1,5 @@
 from django.urls import path
-from .views import (create_new_test,create_new_subject,
-                subject_list_view,subject_detail_view,
-                create_new_question,test_detail_view,subject_update_view,
-                test_update_view,question_update_view,for_hod_subject_list_view,show_all_student,
-                verify_the_student,student_update_view,delete_the_question,student_all_test_detail,
-                student_exam_result,all_teacher_details,verify_the_teacher,teacher_update_view,report_student_test)
-
+from .views import *
 from students.views import TeacherSignUpView
 urlpatterns = [
         path('teacher-signup/',TeacherSignUpView.as_view(), name='teacher_signup'),
@@ -42,6 +36,8 @@ urlpatterns = [
         path('teacher-update/<int:pk>/',teacher_update_view,name ='teacher_update'),
 
         path('report-student/',report_student_test,name ='report_student_test'),
+
+        path('report-student-list/',reported_student_list,name ='reported_student_list'),
 
 
 

@@ -175,8 +175,13 @@ class ReportStudent(models.Model):
     student=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True,related_name='student_report')
     teacher=models.ForeignKey(User,on_delete=models.CASCADE,default=False,null=True,related_name='teacher_report')
     test= models.ForeignKey(Test,on_delete=models.SET_NULL,blank=True,null=True)
-    description=models.TextField(max_length=300,unique=True,)
+    description=models.TextField(max_length=300)
     created =models.DateTimeField(auto_now_add=True)
+
+    def get_student(self):
+        return Student.objects.get(user=self.student)
+
+
 
     def save(self, *args, **kwargs):
         #deleting all th recolds of that test

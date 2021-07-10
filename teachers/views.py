@@ -248,6 +248,28 @@ def show_all_student(request):
 	return render(request, "teachers/my_students.html", {
     			'my_students':my_students})
 
+
+
+
+
+
+@allow_to_teacher_hod
+@login_required
+def reported_student_list(request):
+	reported_student_list=ReportStudent.objects.all()
+	# if request.user.is_teacher :
+	# 	current_teacher=Teacher.objects.get(user=request.user)
+	# 	my_students=Student.objects.filter(college_rollno__icontains=current_teacher.class_teacher_roll)
+	# elif request.user.is_hod:
+	# 	current_teacher=Teacher.objects.get(user=request.user)
+	# 	my_students=Student.objects.all()
+
+	return render(request, "teachers/reported_student.html", {
+    			'reported_student':reported_student_list})
+
+
+
+
 @allow_to_teacher_hod
 @login_required
 def verify_the_student(request,pk):
@@ -398,7 +420,7 @@ def report_student_test(request):
 	report_student=ReportStudent.objects.create(student=current_student.user,teacher=request.user,
 										test=current_test,description=description)
 	report_student.save()
-	messages.info(request, f"{student_id.college_rollno} has been reported successfully make sure you change the time for retest")
+	messages.info(request, f"{current_student.college_rollno} has been reported successfully make sure you change the time for retest")
 	return JsonResponse({'success':'true','pk':current_student.pk},safe=False)
 
 

@@ -194,9 +194,12 @@
 <script type="text/javascript">
   var report_question=document.getElementById('report_question');
   var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  var description=document.getElementById('exampleFormControlTextarea1').value
   
     report_question.addEventListener("click", (event) => {
-      console.log('sodfjgnsimngjksdmjgnsjnhu')
+
+  
+  
         $j.ajax({
             type: "POST",
             url:"{% url 'report_student_test' %}",
@@ -204,7 +207,7 @@
                 csrfmiddlewaretoken: csrftoken,
                 test_id: {{current_test.pk}},
                 student_id: {{current_student.pk}},
-                description:document.getElementById('exampleFormControlTextarea1').value,
+                description:description,
             },
 
             success: function (response) {
@@ -216,6 +219,7 @@
 
             },
         });
+     
     });
 </script>
 

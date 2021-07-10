@@ -2,13 +2,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load templates_tags %}
 
 <h2 class="h1 fw-bold text-center">Your  Subjects</h2>
 <hr>
 <div class="row">
 
 <div class="list-group ml-2 mr-2">
-      <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+      <a style="color:white;" class="list-group-item list-group-item-action active" aria-current="true">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">Students Subjects</h5>
         </div>
@@ -34,33 +35,55 @@
 
 
 <br>
-<div class="list-group ml-2 mr-2">
-      <a href="#" class="list-group-item list-group-item-action " aria-current="true" style="background-color: red;border:red ;">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1" style="color:white">Students Subjects</h5>
-        </div>
-   
-      </a>
-      {% for subject in all_subject %}
-              <a href="{% url 'student_subject_detail' subject.id %}" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">{{subject.subject_name}}  ({{subject.subject_code}})</h5>
-                  <small class="text-muted">{{subject.no_of_test_in_subject}} Tests Included</small>
-                </div>
 
-                <small class="text-muted"> Subject Teachers  :
-                    {% for teacher_subject in subject.teachers.all %} 
-                        {{teacher_subject.get_full_name}}  , {% endfor %}
-                </small>
-              </a>
+{% if reports_student %}
+
+  <div class="list-group ml-2 mr-2">
+        <a  class="list-group-item list-group-item-action " aria-current="true" style="background-color: red;border:red ;">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1" style="color:white">Your Spam Reports</h5>
+          </div>
+     
+        </a>
+        {% for report in reports_student %}
+                {% if   request.user|eligible_student_test:report.test.id  %}
 
 
-      {% endfor %}
-          
-            </div>
-</div>
+                <a href="{% url 'student_subject_detail' report.test.subject.id %}" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h7 class="mb-1">
+                      <span style="color: red;font-size: 120%;font-weight: bold;">Description<br></span>
+                     
+                  {{report.description}}  </h7>
+                    <small class="text-muted">
+                      
+                      <button type="button" class="btn btn-success btn-rounded btn-sm">Give Test Again</button></small>
+                  </div>
+
+                  <small class="text-muted"> 
+                    <span style="color: red;font-size: 120%;font-weight: bold;">
+                    Teacher Who Spam You  :
+                    </span>
+                          {{report.teacher.get_full_name}}
+                  </small>
+                  <br>
+                   <small class="text-muted"> 
+
+                          {{report.test.test_title}} (({{report.test.subject.subject_name}}))
+                  </small>
+
+                   
+                </a>
+               {% endif %}
+
+        {% endfor %}
+            
+              </div>
+  </div>
 
 
+{% endif  %}
 
 
+  <br>
  {% endblock content %}
